@@ -1,8 +1,4 @@
 {
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=7.0.0"
-  },
   "name": "fortune-wheel-booth",
   "scripts": {
     "build": "npm run build --workspaces --if-present",
@@ -12,7 +8,9 @@
     "test": "npm test --workspaces --if-present"
   },
   "type": "module",
-  "workspaces": [
-    "src/fortune-wheel-booth-frontend"
-  ]
+  "engines": {
+    "node": "^20",
+    "pnpm": "^9",
+    "npm": "please use pnpm"
+  }
 }
