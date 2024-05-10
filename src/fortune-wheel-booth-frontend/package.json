@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "setup": "npm i && dfx canister create fortune-wheel-booth-backend && dfx generate fortune-wheel-booth-backend && dfx deploy",
+    "setup": "pnpm i && dfx canister create fortune-wheel-booth-backend && dfx generate fortune-wheel-booth-backend && dfx deploy",
     "start": "vite --port 3000",
     "prebuild": "dfx generate",
     "build": "tsc && vite build",

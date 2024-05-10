@@ -1,11 +1,11 @@
 {
   "name": "fortune-wheel-booth",
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "prebuild": "npm run prebuild --workspaces --if-present",
-    "pretest": "npm run prebuild --workspaces --if-present",
-    "start": "npm start --workspaces --if-present",
-    "test": "npm test --workspaces --if-present"
+    "build": "pnpm run -r build",
+    "prebuild": "pnpm run -r prebuild",
+    "pretest": "pnpm run -r prebuild",
+    "start": "pnpm run -r start",
+    "test": "pnpm run -r test"
   },
   "type": "module",
   "engines": {

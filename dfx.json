@@ -12,18 +12,13 @@
         "src/fortune-wheel-booth-frontend/dist"
       ],
       "type": "assets",
-      "workspace": "fortune-wheel-booth-frontend"
+      "build": [
+        "pnpm -F fortune-wheel-booth-frontend build"
+      ]
     },
-    "internet_identity": {
-      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
-      "frontend": {},
-      "remote": {
-        "id": {
-          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
-        }
-      },
-      "type": "custom",
-      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
+    "internet-identity" : {
+      "type": "pull",
+      "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
     }
   },
   "defaults": {
