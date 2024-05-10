@@ -1,0 +1,37 @@
+{
+  "canisters": {
+    "fortune-wheel-booth-backend": {
+      "main": "src/fortune-wheel-booth-backend/main.mo",
+      "type": "motoko"
+    },
+    "fortune-wheel-booth-frontend": {
+      "dependencies": [
+        "fortune-wheel-booth-backend"
+      ],
+      "source": [
+        "src/fortune-wheel-booth-frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "fortune-wheel-booth-frontend"
+    },
+    "internet_identity": {
+      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
+      "frontend": {},
+      "remote": {
+        "id": {
+          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+        }
+      },
+      "type": "custom",
+      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
