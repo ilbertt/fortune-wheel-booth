@@ -7,25 +7,41 @@ import Error "mo:base/Error";
 import Option "mo:base/Option";
 import Random "mo:base/Random";
 import Nat8 "mo:base/Nat8";
+import Nat "mo:base/Nat";
+
+import IcpLedger "canister:icp_ledger";
+import ckBtcLedger "canister:ckbtc_ledger";
+import ckEthLedger "canister:cketh_ledger";
 
 shared ({ caller = initialController }) actor class Main() {
   type Prize = {
-    #icp;
-    #ckBtc;
-    #ckEth;
-    #merch;
+    #icp0_5 : Nat;
+    #icp1 : Nat;
+    #ckBtc0_001 : Nat;
+    #ckBtc0_005 : Nat;
+    #ckEth0_01 : Nat;
+    #ckEth0_05 : Nat;
+    #merchTshirt;
+    #merchHat;
   };
 
   type Extraction = {
     extractedAt : Time.Time;
     prize : Prize;
+    transactionBlockIndex : ?Nat;
   };
 
   stable let prizes : [Prize] = [
-    #icp,
-    #ckBtc,
-    #ckEth,
-    #merch,
+    // ICP and ckBTC have 8 decimals: 1_000_000_000
+    #icp0_5(50_000_000),
+    #icp1(100_000_000),
+    #ckBtc0_001(100_000),
+    #ckBtc0_005(500_000),
+    // ckETH has 18 decimals: 1_000_000_000_000_000_000
+    #ckEth0_01(10_000_000_000_000_000),
+    #ckEth0_05(50_000_000_000_000_000),
+    #merchTshirt,
+    #merchHat,
   ];
 
   private stable var adminPrincipals : List.List<Principal> = ?(initialController, null);
@@ -79,9 +95,32 @@ shared ({ caller = initialController }) actor class Main() {
 
     let prize = await getRandomPrize();
 
+    let transactionBlockIndex = switch (prize) {
+      case (#icp0_5(amount)) {
+        ?(await transferIcp(receiver, amount));
+      };
+      case (#icp1(amount)) {
+        ?(await transferIcp(receiver, amount));
+      };
+      case (#ckBtc0_001(amount)) {
+        ?(await transferCkBtc(receiver, amount));
+      };
+      case (#ckBtc0_005(amount)) {
+        ?(await transferCkBtc(receiver, amount));
+      };
+      case (#ckEth0_01(amount)) {
+        ?(await transferCkEth(receiver, amount));
+      };
+      case (#ckEth0_05(amount)) {
+        ?(await transferCkEth(receiver, amount));
+      };
+      case (_) { null };
+    };
+
     let extraction : Extraction = {
       extractedAt;
       prize;
+      transactionBlockIndex;
     };
 
     extractedPrincipals.put(receiver, extraction);
@@ -98,6 +137,66 @@ shared ({ caller = initialController }) actor class Main() {
       case (?index) { prizes[Nat8.toNat(index)] };
       case (null) {
         throw Error.reject("Failed to get random number");
+      };
+    };
+  };
+
+  func transferIcp(receiver : Principal, amount : Nat) : async Nat {
+    let transferRes = await IcpLedger.icrc1_transfer({
+      from_subaccount = null;
+      to = { owner = receiver; subaccount = null };
+      amount;
+      fee = null;
+      memo = null;
+      created_at_time = null;
+    });
+
+    switch (transferRes) {
+      case (#Ok(value)) {
+        value;
+      };
+      case (#Err(error)) {
+        throw Error.reject(debug_show (error));
+      };
+    };
+  };
+
+  func transferCkBtc(receiver : Principal, amount : Nat) : async Nat {
+    let transferRes = await ckBtcLedger.icrc1_transfer({
+      from_subaccount = null;
+      to = { owner = receiver; subaccount = null };
+      amount;
+      fee = null;
+      memo = null;
+      created_at_time = null;
+    });
+
+    switch (transferRes) {
+      case (#Ok(value)) {
+        value;
+      };
+      case (#Err(error)) {
+        throw Error.reject(debug_show (error));
+      };
+    };
+  };
+
+  func transferCkEth(receiver : Principal, amount : Nat) : async Nat {
+    let transferRes = await ckEthLedger.icrc1_transfer({
+      from_subaccount = null;
+      to = { owner = receiver; subaccount = null };
+      amount;
+      fee = null;
+      memo = null;
+      created_at_time = null;
+    });
+
+    switch (transferRes) {
+      case (#Ok(value)) {
+        value;
+      };
+      case (#Err(error)) {
+        throw Error.reject(debug_show (error));
       };
     };
   };

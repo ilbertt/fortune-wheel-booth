@@ -30,11 +30,8 @@ dfx start --background
 # eventually pull the dependencies (only the first time)
 dfx deps pull
 
-# deploy the dependencies
-dfx deps deploy
-
-# Deploys your canisters to the replica and generates your candid interface
-dfx deploy
+# deploy all the canisters locally
+./scripts/deploy-local-canisters.sh
 ```
 
 Once the job completes, your application will be available at `http://localhost:4943?canisterId={asset_canister_id}`.
