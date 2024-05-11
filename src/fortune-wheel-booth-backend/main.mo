@@ -31,6 +31,10 @@ shared ({ caller = initialController }) actor class Main() {
     transactionBlockIndex : ?Nat;
   };
 
+  /// Must have a size that is a power of 2
+  /// to have the random index extraction work properly.
+  ///
+  /// See the comment in the `getRandomPrize` method.
   stable let prizes : [Prize] = [
     // ICP and ckBTC have 8 decimals: 1_000_000_000
     #icp0_5(50_000_000),
@@ -58,7 +62,7 @@ shared ({ caller = initialController }) actor class Main() {
     extractedPrincipalsEntries := [];
   };
 
-  func isAdmin(principal : Principal) : Bool {
+  private func isAdmin(principal : Principal) : Bool {
     List.some<Principal>(adminPrincipals, func p { p == principal });
   };
 
@@ -70,7 +74,7 @@ shared ({ caller = initialController }) actor class Main() {
     adminPrincipals := List.push(principal, adminPrincipals);
   };
 
-  func isPrincipalExtracted(principal : Principal) : Bool {
+  private func isPrincipalExtracted(principal : Principal) : Bool {
     Option.isSome(extractedPrincipals.get(principal));
   };
 
@@ -128,20 +132,23 @@ shared ({ caller = initialController }) actor class Main() {
     extraction;
   };
 
-  func getRandomPrize() : async Prize {
+  private func getRandomPrize() : async Prize {
     let random = Random.Finite(await Random.blob());
 
-    let prizesCount = Nat8.fromNat(prizes.size());
+    // the result of log(prizes.size())
+    // since the random.range method extracts
+    // a random number between 0 and (2^rangeExponent) - 1
+    let rangeExponent : Nat8 = 3;
 
-    switch (random.binomial(prizesCount - 1)) {
-      case (?index) { prizes[Nat8.toNat(index)] };
+    switch (random.range(rangeExponent)) {
+      case (?index) { prizes[index] };
       case (null) {
         throw Error.reject("Failed to get random number");
       };
     };
   };
 
-  func transferIcp(receiver : Principal, amount : Nat) : async Nat {
+  private func transferIcp(receiver : Principal, amount : Nat) : async Nat {
     let transferRes = await IcpLedger.icrc1_transfer({
       from_subaccount = null;
       to = { owner = receiver; subaccount = null };
@@ -161,7 +168,7 @@ shared ({ caller = initialController }) actor class Main() {
     };
   };
 
-  func transferCkBtc(receiver : Principal, amount : Nat) : async Nat {
+  private func transferCkBtc(receiver : Principal, amount : Nat) : async Nat {
     let transferRes = await ckBtcLedger.icrc1_transfer({
       from_subaccount = null;
       to = { owner = receiver; subaccount = null };
@@ -181,7 +188,7 @@ shared ({ caller = initialController }) actor class Main() {
     };
   };
 
-  func transferCkEth(receiver : Principal, amount : Nat) : async Nat {
+  private func transferCkEth(receiver : Principal, amount : Nat) : async Nat {
     let transferRes = await ckEthLedger.icrc1_transfer({
       from_subaccount = null;
       to = { owner = receiver; subaccount = null };
