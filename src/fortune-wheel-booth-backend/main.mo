@@ -52,7 +52,7 @@ shared ({ caller = initialController }) actor class Main() {
 
   // persist non-stable structures: https://internetcomputer.org/docs/current/motoko/main/canister-maintenance/upgrades#preupgrade-and-postupgrade-system-methods
   private stable var extractedPrincipalsEntries : [(Principal, Extraction)] = [];
-  private let extractedPrincipals = TrieMap.TrieMap<Principal, Extraction>(Principal.equal, Principal.hash);
+  private let extractedPrincipals = TrieMap.fromEntries<Principal, Extraction>(extractedPrincipalsEntries.vals(), Principal.equal, Principal.hash);
 
   system func preupgrade() {
     extractedPrincipalsEntries := Iter.toArray(extractedPrincipals.entries());
