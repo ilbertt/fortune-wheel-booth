@@ -1,6 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: sans-serif;
   font-size: 1.5rem;
+  background-color: #1d123d;
 }
 
 img {
@@ -20,7 +34,7 @@ form {
   align-items: baseline;
 }
 
-button[type="submit"] {
+button[type='submit'] {
   padding: 5px 20px;
   margin: 10px auto;
   float: right;
@@ -34,4 +48,36 @@ button[type="submit"] {
 
 #greeting:empty {
   display: none;
+}
+
+.prize-container-animation {
+  animation: fadeIn 0.7s ease-in forwards;
+}
+
+canvas {
+  filter: drop-shadow(0 0 0.75rem #040404);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: rotate(0deg) scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.prize-animation {
+  animation: swing 1s ease-in-out alternate infinite;
+}
+
+@keyframes swing {
+  from {
+    transform: rotate(-20deg);
+  }
+  to {
+    transform: rotate(20deg);
+  }
 }
