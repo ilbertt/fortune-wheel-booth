@@ -17,6 +17,7 @@ function App() {
 
   return (
     <main className='flex justify-center items-center flex-col relative h-full'>
+      {/* TODO: Put the ICPhubIt logo */}
       <FortuneWheel
         setShowModalPrize={setShowModalPrize}
         prizeNumber={findPrize(Object.keys(mockCanisterResponse)[0])?.id}

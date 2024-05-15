@@ -1,13 +1,7 @@
 import Fireworks from './Fireworks';
-import { Prize } from 'declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did';
 import { findPrize } from '../utils/findPrize';
-import { Dispatch, SetStateAction } from 'react';
 import CloseIcon from '../../public/close.svg';
-
-interface ModalPrizeProps {
-  prizeNumber: Prize;
-  setShowModalPrize: Dispatch<SetStateAction<boolean>>;
-}
+import { ModalPrizeProps } from '../types';
 
 export default function ModalPrize({
   prizeNumber,
@@ -25,7 +19,7 @@ export default function ModalPrize({
       <p className='text-5xl font-bold text-white uppercase'>You won!</p>
       <div className='prize-container-animation'>
         <img
-          src={findPrize(Object.keys(prizeNumber)[0])?.image.uri}
+          src={findPrize(Object.keys(prizeNumber)[0])?.image?.uri}
           alt='prize'
           className='prize-animation h-30'
         />

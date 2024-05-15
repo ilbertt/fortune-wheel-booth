@@ -5,8 +5,8 @@ export const findPrize = (option: string) => {
   return (
     PRIZES.find((prize) => prize.option === option) || {
       id: 9999,
-      option: 'lose',
-      image: { uri: '/images/duck.png' },
+      option: 'placeholder',
+      image: { uri: '../../public/images/duck.png' },
       style: { backgroundColor: '#FBB03C' },
     }
   );
