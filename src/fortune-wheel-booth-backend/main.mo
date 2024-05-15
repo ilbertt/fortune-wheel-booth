@@ -36,7 +36,7 @@ shared ({ caller = initialController }) actor class Main() {
   ///
   /// See the comment in the `getRandomPrize` method.
   stable let prizes : [Prize] = [
-    // ICP and ckBTC have 8 decimals: 1_000_000_000
+    // ICP and ckBTC have 8 decimals: 100_000_000
     #icp0_5(50_000_000),
     #icp1(100_000_000),
     #ckBtc0_001(100_000),
