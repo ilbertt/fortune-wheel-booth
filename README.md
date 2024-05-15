@@ -52,6 +52,36 @@ pnpm start
 
 Which will start a server at `http://localhost:8080`, proxying API requests to the replica at port 4943.
 
+## Usage
+
+To get the latest extraction (you don't need to be authenticated), use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend getLatestExtraction
+```
+
+### Admin
+
+You are automatically set as an admin if you deploy the canister the first time.
+
+To run an extraction as an admin, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend extract '(principal "<the-principal-you-want-to-extract-for>")'
+```
+
+To add an admin, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend addAdmin '(principal "<the-principal-you-want-to-add-as-admin>")'
+```
+
+To fetch the extraction for a principal, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend getExtraction '(principal "<the-principal-you-want-to-fetch-the-extraction-for>")'
+```
+
 ### Note on frontend environment variables
 
 If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
