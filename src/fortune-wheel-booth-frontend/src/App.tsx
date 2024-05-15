@@ -9,7 +9,6 @@ import { Principal } from "@dfinity/principal";
 
 export default function Home() {
   const [showScanner, setShowScanner] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [adminActor, setAdminActor] = useState<ActorSubclass<_SERVICE>>();
   const [adminPrincipal, setAdminPrincipal] = useState<Principal>();
 
@@ -24,6 +23,11 @@ export default function Home() {
     setAdminActor(actor);
 
     setAdminPrincipal(identity.getPrincipal());
+  }, []);
+
+  const resetIcState = useCallback(() => {
+    setAdminActor(undefined);
+    setAdminPrincipal(Principal.anonymous());
   }, []);
 
   const handleLogin = useCallback(async () => {
@@ -50,19 +54,21 @@ export default function Home() {
       const authenticated = await authClient.isAuthenticated();
       if (authenticated) {
         setupIcState(authClient.getIdentity());
+      } else {
+        resetIcState();
       }
-
-      setIsAuthenticated(authenticated);
     })();
-  }, [setupIcState]);
+  }, [setupIcState, resetIcState]);
 
-  if (isAuthenticated === null) {
+  if (!adminPrincipal) {
     return <div>Loading...</div>;
   }
 
+  const isAnonymous = adminPrincipal.isAnonymous();
+
   return (
     <>
-      {!isAuthenticated && (
+      {isAnonymous && (
         <div className='flex justify-center items-center h-full w-full flex-col gap-4'>
           <img
             className='absolute top-10 left-0 right-0 m-auto h-32 z-20'
@@ -83,7 +89,7 @@ export default function Home() {
           </a>
         </div>
       )}
-      {isAuthenticated && (
+      {!isAnonymous && (
         <>
           <Scanner
             onResult={(text, result) => console.log(text, result)}
@@ -92,7 +98,7 @@ export default function Home() {
           <p className='absolute bottom-[15%] left-0 right-0 m-auto text-center text-white text-base'>
             Admin Principal:
             <br />
-            <span>{adminPrincipal?.toText()}</span>
+            <span>{adminPrincipal.toText()}</span>
           </p>
         </>
       )}
