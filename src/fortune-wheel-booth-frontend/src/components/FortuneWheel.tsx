@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import { PRIZES } from '../costants';
-import IcpLogo from '../../public/images/icp-logo.png';
+import IcpLogo from '../../public/images/icp-logo-dark.png';
 import Pointer from '../../public/images/pointer.png';
 import { FortuneWheelProps } from '../types';
 
