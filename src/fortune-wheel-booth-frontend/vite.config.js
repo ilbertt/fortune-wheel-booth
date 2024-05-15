@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import environment from 'vite-plugin-environment';
 import dotenv from 'dotenv';
+import { resolve } from 'path';
 
 dotenv.config({ path: '../../.env' });
 
@@ -11,8 +12,8 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        login: resolve(__dirname, 'login/index.html'),
+        home: resolve(__dirname, 'index.html'),
+        'fortune-wheel': resolve(__dirname, 'fortune-wheel/index.html'),
       },
     },
   },
