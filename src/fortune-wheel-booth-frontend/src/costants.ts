@@ -7,7 +7,7 @@ import { WheelDataType } from 'react-custom-roulette';
 
 export const PRIZES: WheelDataType[] = [
   {
-    option: 'ckEth0_001',
+    option: 'ckEth0_01',
     image: { uri: ckEth, sizeMultiplier: 0.8, offsetY: 140 },
     style: { backgroundColor: '#FBB03C' },
   },
@@ -47,3 +47,14 @@ export const PRIZES: WheelDataType[] = [
     style: { backgroundColor: '#FFEC0C' },
   },
 ];
+
+export const PRIZES_VALUES_MAPPING: Record<string, string> = {
+  ckEth0_01: '0.01 ckEth',
+  icp1: '1 icp',
+  ckEth0_05: '0.05 ckEth',
+  icp0_5: '0.5 icp',
+  ckBtc0_001: '0.001 ckBtc',
+  merchHat: 'Hat',
+  ckBtc0_005: '0.005 ckBtc',
+  merchTshirt: 'T-Shirt',
+};
