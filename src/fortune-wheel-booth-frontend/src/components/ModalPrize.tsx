@@ -1,6 +1,6 @@
 import Fireworks from './Fireworks';
 import { findPrize } from '../utils/findPrize';
-import CloseIcon from '../../public/close.svg';
+import CloseIcon from '../assets/close.svg';
 import { ModalPrizeProps } from '../types';
 
 export default function ModalPrize({
@@ -11,18 +11,20 @@ export default function ModalPrize({
     <div className='absolute flex justify-center items-center backdrop-blur-2xl h-full w-full z-20 flex-col'>
       <button
         onClick={() => setShowModalPrize(false)}
-        className='absolute top-5 right-5 bg-white rounded-full w-16 h-16 p-1 cursor-pointer flex justify-center items-center'
+        className='absolute top-5 right-5 bg-white rounded-full p-1 cursor-pointer flex justify-center items-center'
       >
-        <img src={CloseIcon} className='h-12' alt='Close Icon'></img>
+        <img src={CloseIcon} className='h-[3vw]' alt='Close Icon'></img>
       </button>
       <Fireworks />
-      <p className='text-5xl font-bold text-white uppercase'>You won!</p>
-      <div className='prize-container-animation'>
-        <img
-          src={findPrize(Object.keys(prizeNumber)[0])?.image?.uri}
-          alt='prize'
-          className='prize-animation h-30'
-        />
+      <div className='flex flex-col justify-center items-center gap-3'>
+        <p className='text-[6vw] font-bold text-white uppercase'>You won!</p>
+        <div className='prize-container-animation'>
+          <img
+            src={findPrize(Object.keys(prizeNumber)[0])?.image?.uri}
+            alt='prize'
+            className='prize-animation h-30'
+          />
+        </div>
       </div>
     </div>
   );

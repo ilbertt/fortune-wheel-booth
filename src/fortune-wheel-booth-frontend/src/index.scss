@@ -58,6 +58,13 @@ canvas {
   filter: drop-shadow(0 0 0.75rem #040404);
 }
 
+.wheel-container > div {
+  max-width: 1800px !important;
+  max-height: 1800px !important;
+  width: 40vw !important;
+  height: 40vw !important;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

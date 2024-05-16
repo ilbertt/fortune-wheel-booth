@@ -1,8 +1,8 @@
-import Duck from '../public/images/duck.png';
-import Lemon from '../public/images/lemon.png';
-import ckBtc from '../public/images/ckbtc.png';
-import ckEth from '../public/images/cketh.png';
-import IcpLogoLight from '../public/images/icp-logo-light.png';
+import Duck from './assets/images/duck.png';
+import Lemon from './assets/images/lemon.png';
+import ckBtc from './assets/images/ckbtc.png';
+import ckEth from './assets/images/cketh.png';
+import IcpLogoLight from './assets/images/icp-logo-light.png';
 import { CustomWheelData } from './types';
 
 export const PRIZES: CustomWheelData[] = [

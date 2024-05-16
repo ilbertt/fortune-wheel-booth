@@ -29,7 +29,7 @@ function App() {
         />
       )}
       <img
-        className='absolute bottom-5 left-5 h-20 z-20'
+        className='absolute bottom-5 left-5 h-[4vw] z-20'
         src='/logo2.svg'
         alt='DFINITY logo'
       />
