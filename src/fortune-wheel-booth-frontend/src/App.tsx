@@ -118,6 +118,14 @@ export default function Home() {
                 {adminPrincipal.toText()}
               </span>
             </p>
+            <button
+              className='bg-white rounded-xl shadow-sm w-32 p-1'
+              onClick={() =>
+                navigator.clipboard.writeText(adminPrincipal.toText())
+              }
+            >
+              <p className='text-center text-sm'>Copy Principal</p>
+            </button>
           </div>
         </>
       )}
