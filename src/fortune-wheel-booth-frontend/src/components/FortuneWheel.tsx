@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import { PRIZES } from '../costants';
 import IcpLogo from '../assets/images/icp-logo-dark.png';
-import Pointer from '../assets/images/images/pointer.png';
+import Pointer from '../assets/images/pointer.png';
 import { FortuneWheelProps } from '../types';
 
 export default function FortuneWheel({

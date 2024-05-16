@@ -11,7 +11,3 @@ export interface FortuneWheelProps {
   setShowModalPrize: Dispatch<SetStateAction<boolean>>;
   prizeNumber: number;
 }
-
-export interface CustomWheelData extends WheelDataType {
-  id: number;
-}

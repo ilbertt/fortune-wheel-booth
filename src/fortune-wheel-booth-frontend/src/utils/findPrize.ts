@@ -1,13 +1,6 @@
 import { PRIZES } from '../costants';
 
-// TODO: Fix this
 export const findPrize = (option: string) => {
-  return (
-    PRIZES.find((prize) => prize.option === option) || {
-      id: 9999,
-      option: 'placeholder',
-      image: { uri: '../../public/images/duck.png' },
-      style: { backgroundColor: '#FBB03C' },
-    }
-  );
+  const prize = PRIZES.find((prize, index) => prize.option === option);
+  return prize ? PRIZES.indexOf(prize) : 9; // TODO: Fix this, 9 represents "no prize exists for this option"
 };

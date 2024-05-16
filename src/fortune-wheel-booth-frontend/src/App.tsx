@@ -20,7 +20,7 @@ function App() {
       {/* TODO: Put the ICPhubIt logo */}
       <FortuneWheel
         setShowModalPrize={setShowModalPrize}
-        prizeNumber={findPrize(Object.keys(mockCanisterResponse)[0])?.id}
+        prizeNumber={findPrize(Object.keys(mockCanisterResponse)[0])}
       />
       {showModalPrize && (
         <ModalPrize

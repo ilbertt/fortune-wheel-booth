@@ -2,11 +2,13 @@ import Fireworks from './Fireworks';
 import { findPrize } from '../utils/findPrize';
 import CloseIcon from '../assets/close.svg';
 import { ModalPrizeProps } from '../types';
+import { PRIZES } from '../costants';
 
 export default function ModalPrize({
   prizeNumber,
   setShowModalPrize,
 }: ModalPrizeProps) {
+  const wonPrize = PRIZES[findPrize(Object.keys(prizeNumber)[0])];
   return (
     <div className='absolute flex justify-center items-center backdrop-blur-2xl h-full w-full z-20 flex-col'>
       <button
@@ -20,7 +22,7 @@ export default function ModalPrize({
         <p className='text-[6vw] font-bold text-white uppercase'>You won!</p>
         <div className='prize-container-animation'>
           <img
-            src={findPrize(Object.keys(prizeNumber)[0])?.image?.uri}
+            src={wonPrize.image?.uri}
             alt='prize'
             className='prize-animation h-30'
           />
