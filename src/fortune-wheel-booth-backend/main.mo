@@ -8,6 +8,7 @@ import Option "mo:base/Option";
 import Random "mo:base/Random";
 import Nat8 "mo:base/Nat8";
 import Nat "mo:base/Nat";
+import Order "mo:base/Order";
 
 import IcpLedger "canister:icp_ledger";
 import ckBtcLedger "canister:ckbtc_ledger";
@@ -214,5 +215,23 @@ shared ({ caller = initialController }) actor class Main() {
     };
 
     extractedPrincipals.get(principal);
+  };
+
+  public shared query func getLastExtraction() : async ?(Principal, Extraction) {
+    let entries = extractedPrincipals.entries();
+
+    let sorted_entries = Iter.sort(
+      entries,
+      func(e1 : (Principal, Extraction), e2 : (Principal, Extraction)) : Order.Order {
+        // sort descending
+        if (e1.1.extractedAt < e2.1.extractedAt) {
+          #greater;
+        } else {
+          #less;
+        };
+      },
+    );
+
+    sorted_entries.next();
   };
 };
