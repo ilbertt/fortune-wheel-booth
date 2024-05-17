@@ -22,6 +22,7 @@ export default function Home() {
     setAdminActor(actor);
 
     setAdminPrincipal(identity.getPrincipal());
+    console.log(adminPrincipal);
   }, []);
 
   const resetIcState = useCallback(() => {
@@ -59,6 +60,21 @@ export default function Home() {
       }
     })();
   }, [setupIcState, resetIcState]);
+
+  const extractPrize = async (text: string) => {
+    const userPrincipal: Principal = Principal.fromText(text);
+    if (adminActor) {
+      try {
+        const extraction = await adminActor.extract(userPrincipal);
+        console.log(extraction);
+      } catch (error: any) {
+        console.log(error);
+        if (error.message.includes('Only admins can extract')) {
+          logout();
+        }
+      }
+    }
+  };
 
   const logout = useCallback(async () => {
     if (adminActor) {
@@ -99,7 +115,7 @@ export default function Home() {
       {!isAnonymous && (
         <>
           <Scanner
-            onResult={(text, result) => console.log(text, result)}
+            onResult={(text) => extractPrize(text)}
             onError={(error) => console.log('Error', error?.message)}
           />
           <div className='w-full flex justify-center items-center'>
