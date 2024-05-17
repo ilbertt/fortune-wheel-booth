@@ -13,6 +13,7 @@ import { Principal } from '@dfinity/principal';
 export default function Home() {
   const [adminActor, setAdminActor] = useState<ActorSubclass<_SERVICE>>();
   const [adminPrincipal, setAdminPrincipal] = useState<Principal>();
+  const [canisterErrorResponse, setCanisterErrorResponse] = useState<string>();
 
   const setupIcState = useCallback((identity: Identity) => {
     const agent = new HttpAgent({ identity });
@@ -71,6 +72,7 @@ export default function Home() {
         console.log(error);
         if (error.message.includes('Only admins can extract')) {
           logout();
+          setCanisterErrorResponse('Only admins can extract');
         }
       }
     }
@@ -98,6 +100,11 @@ export default function Home() {
             src='/images/icp-logo.png'
             alt='icp logo'
           />
+          {canisterErrorResponse && (
+            <p className='text-red-500 text-sm absolute top-1/4 left-0 right-0 m-auto text-center'>
+              {canisterErrorResponse}
+            </p>
+          )}
           <button
             className='bg-white rounded-xl shadow-sm w-44 text-center px-4 py-2'
             onClick={handleLogin}
