@@ -6,9 +6,9 @@ import TrieMap "mo:base/TrieMap";
 import Error "mo:base/Error";
 import Option "mo:base/Option";
 import Random "mo:base/Random";
-import Nat8 "mo:base/Nat8";
 import Nat "mo:base/Nat";
 import Order "mo:base/Order";
+import Fuzz "mo:fuzz";
 
 import IcpLedger "canister:icp_ledger";
 import ckBtcLedger "canister:ckbtc_ledger";
@@ -32,10 +32,6 @@ shared ({ caller = initialController }) actor class Main() {
     transactionBlockIndex : ?Nat;
   };
 
-  /// Must have a size that is a power of 2
-  /// to have the random index extraction work properly.
-  ///
-  /// See the comment in the `getRandomPrize` method.
   stable let prizes : [Prize] = [
     // ICP and ckBTC have 8 decimals: 100_000_000
     #icp0_5(50_000_000),
@@ -96,8 +92,6 @@ shared ({ caller = initialController }) actor class Main() {
       throw Error.reject("Already extracted for this principal");
     };
 
-    let extractedAt = Time.now();
-
     let prize = await getRandomPrize();
 
     let transactionBlockIndex = switch (prize) {
@@ -123,7 +117,7 @@ shared ({ caller = initialController }) actor class Main() {
     };
 
     let extraction : Extraction = {
-      extractedAt;
+      extractedAt = Time.now();
       prize;
       transactionBlockIndex;
     };
@@ -134,19 +128,10 @@ shared ({ caller = initialController }) actor class Main() {
   };
 
   private func getRandomPrize() : async Prize {
-    let random = Random.Finite(await Random.blob());
+    let fuzz = Fuzz.fromBlob(await Random.blob());
 
-    // the result of log(prizes.size())
-    // since the random.range method extracts
-    // a random number between 0 and (2^rangeExponent) - 1
-    let rangeExponent : Nat8 = 3;
-
-    switch (random.range(rangeExponent)) {
-      case (?index) { prizes[index] };
-      case (null) {
-        throw Error.reject("Failed to get random number");
-      };
-    };
+    let randIndex = fuzz.nat.randomRange(0, (prizes.size() - 1));
+    prizes[randIndex];
   };
 
   private func transferIcp(receiver : Principal, amount : Nat) : async Nat {
