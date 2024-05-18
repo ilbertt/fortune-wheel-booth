@@ -1,6 +1,7 @@
 {
   "name": "fortune-wheel-booth",
   "scripts": {
+    "postinstall": "mops install",
     "build": "pnpm run -r build",
     "prebuild": "pnpm run -r prebuild",
     "pretest": "pnpm run -r prebuild",
