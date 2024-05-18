@@ -82,6 +82,21 @@ To fetch the extraction for a principal, use the following command:
 dfx canister call fortune-wheel-booth-backend getExtraction '(principal "<the-principal-you-want-to-fetch-the-extraction-for>")'
 ```
 
+To manually send tokens to a principal, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend send '(
+  record {
+    tokens = variant { icp = 50_000_000 : nat }; # or ckBtc or ckEth
+    receiver = principal "<the-principal-you-want-to-send-to>";
+  },
+)'
+```
+
+> For ICP and ckBTC, the amount is specified in the format: 1 ICP = 10^8 token amount.
+>
+> For ckETH, the amount is specified in the format: 1 ckETH = 10^18 token amount.
+
 ### Note on frontend environment variables
 
 If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:

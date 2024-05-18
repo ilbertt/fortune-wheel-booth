@@ -150,6 +150,10 @@ shared ({ caller = initialController }) actor class Main() {
   };
 
   private func transferIcp(receiver : Principal, amount : Nat) : async Nat {
+    if (amount > 100_000_000) {
+      throw Error.reject("ICP amount must be less than 100_000_000");
+    };
+
     let transferRes = await IcpLedger.icrc1_transfer({
       from_subaccount = null;
       to = { owner = receiver; subaccount = null };
@@ -170,6 +174,10 @@ shared ({ caller = initialController }) actor class Main() {
   };
 
   private func transferCkBtc(receiver : Principal, amount : Nat) : async Nat {
+    if (amount > 50_000) {
+      throw Error.reject("ckBTC amount must be less than 50_000");
+    };
+
     let transferRes = await ckBtcLedger.icrc1_transfer({
       from_subaccount = null;
       to = { owner = receiver; subaccount = null };
@@ -190,6 +198,10 @@ shared ({ caller = initialController }) actor class Main() {
   };
 
   private func transferCkEth(receiver : Principal, amount : Nat) : async Nat {
+    if (amount > 10_000_000_000_000_000) {
+      throw Error.reject("ckETH amount must be less than 10_000_000_000_000_000");
+    };
+
     let transferRes = await ckEthLedger.icrc1_transfer({
       from_subaccount = null;
       to = { owner = receiver; subaccount = null };
@@ -233,5 +245,42 @@ shared ({ caller = initialController }) actor class Main() {
     );
 
     sorted_entries.next();
+  };
+
+  type ManualSendTokens = {
+    #icp : Nat;
+    #ckBtc : Nat;
+    #ckEth : Nat;
+  };
+
+  type ManualSendArgs = {
+    receiver : Principal;
+    tokens : ManualSendTokens;
+  };
+
+  public shared ({ caller }) func manualTransfer({ receiver; tokens } : ManualSendArgs) : async Nat {
+    if (not isAdmin(caller)) {
+      throw Error.reject("Only admins can manually send");
+    };
+
+    if (Principal.isAnonymous(receiver)) {
+      throw Error.reject("Cannot send to anonymous principal");
+    };
+
+    if (Principal.fromText("aaaaa-aa") == receiver) {
+      throw Error.reject("Cannot send to management canister");
+    };
+
+    switch (tokens) {
+      case (#icp(amount)) {
+        await transferIcp(receiver, amount);
+      };
+      case (#ckBtc(amount)) {
+        await transferCkBtc(receiver, amount);
+      };
+      case (#ckEth(amount)) {
+        await transferCkEth(receiver, amount);
+      };
+    };
   };
 };
