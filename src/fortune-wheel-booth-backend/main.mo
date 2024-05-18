@@ -18,10 +18,10 @@ shared ({ caller = initialController }) actor class Main() {
   type Prize = {
     #icp0_5 : Nat;
     #icp1 : Nat;
-    #ckBtc0_001 : Nat;
-    #ckBtc0_005 : Nat;
+    #ckBtc0_0001 : Nat;
+    #ckBtc0_0005 : Nat;
+    #ckEth0_005 : Nat;
     #ckEth0_01 : Nat;
-    #ckEth0_05 : Nat;
     #merchTshirt;
     #merchHat;
   };
@@ -37,14 +37,14 @@ shared ({ caller = initialController }) actor class Main() {
   ///
   /// See the comment in the `getRandomPrize` method.
   stable let prizes : [Prize] = [
-    // ICP and ckBTC have 8 decimals: 1_000_000_000
+    // ICP and ckBTC have 8 decimals: 100_000_000
     #icp0_5(50_000_000),
     #icp1(100_000_000),
-    #ckBtc0_001(100_000),
-    #ckBtc0_005(500_000),
+    #ckBtc0_0001(10_000),
+    #ckBtc0_0005(50_000),
     // ckETH has 18 decimals: 1_000_000_000_000_000_000
+    #ckEth0_005(5_000_000_000_000_000),
     #ckEth0_01(10_000_000_000_000_000),
-    #ckEth0_05(50_000_000_000_000_000),
     #merchTshirt,
     #merchHat,
   ];
@@ -85,11 +85,11 @@ shared ({ caller = initialController }) actor class Main() {
     };
 
     if (Principal.isAnonymous(receiver)) {
-      throw Error.reject("Anonymous principals cannot receive prizes");
+      throw Error.reject("Anonymous principal cannot receive prizes");
     };
 
     if (Principal.fromText("aaaaa-aa") == receiver) {
-      throw Error.reject("Reserved principal cannot receive prizes");
+      throw Error.reject("Management canister cannot receive prizes");
     };
 
     if (isPrincipalExtracted(receiver)) {
@@ -107,16 +107,16 @@ shared ({ caller = initialController }) actor class Main() {
       case (#icp1(amount)) {
         ?(await transferIcp(receiver, amount));
       };
-      case (#ckBtc0_001(amount)) {
+      case (#ckBtc0_0001(amount)) {
         ?(await transferCkBtc(receiver, amount));
       };
-      case (#ckBtc0_005(amount)) {
+      case (#ckBtc0_0005(amount)) {
         ?(await transferCkBtc(receiver, amount));
       };
-      case (#ckEth0_01(amount)) {
+      case (#ckEth0_005(amount)) {
         ?(await transferCkEth(receiver, amount));
       };
-      case (#ckEth0_05(amount)) {
+      case (#ckEth0_01(amount)) {
         ?(await transferCkEth(receiver, amount));
       };
       case (_) { null };
