@@ -9,6 +9,7 @@ import { HttpAgent } from '@dfinity/agent';
 import { _SERVICE } from 'declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did';
 import { type ActorSubclass, Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
+import icpLogo from './assets/images/icp-logo-dark.png';
 
 export default function Home() {
   const [adminActor, setAdminActor] = useState<ActorSubclass<_SERVICE>>();
@@ -97,7 +98,7 @@ export default function Home() {
         <div className='flex justify-center items-center h-full w-full flex-col gap-4'>
           <img
             className='absolute top-10 left-0 right-0 m-auto h-32 z-20'
-            src='/images/icp-logo.png'
+            src={icpLogo}
             alt='icp logo'
           />
           {canisterErrorResponse && (

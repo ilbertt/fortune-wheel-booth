@@ -7,6 +7,7 @@ import { PRIZES, PRIZES_VALUES_MAPPING } from '../costants';
 export default function ModalPrize({
   prizeNumber,
   setShowModalPrize,
+  setMustSpin,
 }: ModalPrizeProps) {
   const wonPrize = PRIZES[findPrize(Object.keys(prizeNumber)[0])];
   const wonPrizeValue =
@@ -17,7 +18,10 @@ export default function ModalPrize({
   return (
     <div className='absolute flex justify-center items-center backdrop-blur-2xl h-full w-full z-20 flex-col'>
       <button
-        onClick={() => setShowModalPrize(false)}
+        onClick={() => {
+          setShowModalPrize(false);
+          setMustSpin(false);
+        }}
         className='absolute top-5 right-5 bg-white rounded-full p-1 cursor-pointer flex justify-center items-center'
       >
         <img src={CloseIcon} className='h-[3vw]' alt='Close Icon'></img>
