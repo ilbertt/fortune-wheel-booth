@@ -32,11 +32,16 @@ export default function Home() {
   }, []);
 
   const handleLogin = useCallback(async () => {
-    const authClient = await AuthClient.create();
+    const authClient = await AuthClient.create({
+      idleOptions: {
+        disableIdle: true,
+      },
+    });
 
     // start the login process and wait for it to finish
     await new Promise((resolve) => {
       authClient.login({
+        maxTimeToLive: BigInt(86_400_000_000_000),
         identityProvider:
           process.env.DFX_NETWORK === 'ic'
             ? 'https://identity.ic0.app'
