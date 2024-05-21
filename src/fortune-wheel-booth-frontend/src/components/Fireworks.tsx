@@ -1,14 +1,16 @@
-import { useEffect, useMemo, useState } from 'react';
-import Particles, { initParticlesEngine } from '@tsparticles/react';
+// comments from https://github.com/tsparticles/react
+
+import { useEffect, useMemo, useState } from "react";
+import Particles, { initParticlesEngine } from "@tsparticles/react";
 import {
   type Container,
   type ISourceOptions,
   MoveDirection,
   OutMode,
-} from '@tsparticles/engine';
+} from "@tsparticles/engine";
 // import { loadAll } from "@tsparticles/all"; // if you are going to use `loadAll`, install the "@tsparticles/all" package too.
 // import { loadFull } from "tsparticles"; // if you are going to use `loadFull`, install the "tsparticles" package too.
-import { loadSlim } from '@tsparticles/slim'; // if you are going to use `loadSlim`, install the "@tsparticles/slim" package too.
+import { loadSlim } from "@tsparticles/slim"; // if you are going to use `loadSlim`, install the "@tsparticles/slim" package too.
 // import { loadBasic } from "@tsparticles/basic"; // if you are going to use `loadBasic`, install the "@tsparticles/basic" package too.
 
 export default function Fireworks() {
@@ -40,11 +42,11 @@ export default function Fireworks() {
         events: {
           onClick: {
             enable: true,
-            mode: 'push',
+            mode: "push",
           },
           onHover: {
             enable: true,
-            mode: 'repulse',
+            mode: "repulse",
           },
         },
         modes: {
@@ -59,10 +61,10 @@ export default function Fireworks() {
       },
       particles: {
         color: {
-          value: '#ffffff',
+          value: "#ffffff",
         },
         links: {
-          color: '#ffffff',
+          color: "#ffffff",
           distance: 150,
           enable: true,
           opacity: 0.5,
@@ -88,7 +90,7 @@ export default function Fireworks() {
           value: 0.5,
         },
         shape: {
-          type: 'circle',
+          type: "circle",
         },
         size: {
           value: { min: 1, max: 5 },
@@ -96,13 +98,13 @@ export default function Fireworks() {
       },
       detectRetina: true,
     }),
-    []
+    [],
   );
 
   if (init) {
     return (
       <Particles
-        id='tsparticles'
+        id="tsparticles"
         particlesLoaded={particlesLoaded}
         options={options}
       />
