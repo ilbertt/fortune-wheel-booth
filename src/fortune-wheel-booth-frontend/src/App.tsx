@@ -15,6 +15,7 @@ export default function Home() {
   const [adminActor, setAdminActor] = useState<ActorSubclass<_SERVICE>>();
   const [adminPrincipal, setAdminPrincipal] = useState<Principal>();
   const [canisterErrorResponse, setCanisterErrorResponse] = useState<string>();
+  const [prizeExtracted, setPrizeExtracted] = useState<boolean>(false);
 
   const setupIcState = useCallback((identity: Identity) => {
     const agent = new HttpAgent({ identity });
@@ -63,7 +64,15 @@ export default function Home() {
     })();
   }, [setupIcState, resetIcState]);
 
+  useEffect(() => {
+    setInterval(() => {
+      if (prizeExtracted) setPrizeExtracted(false);
+    }, 10000);
+  }, [prizeExtracted]);
+
   const extractPrize = async (text: string) => {
+    if (prizeExtracted) return;
+    setPrizeExtracted(true);
     const userPrincipal: Principal = Principal.fromText(text);
     if (adminActor) {
       try {

@@ -2,7 +2,7 @@ import { Prize } from 'declarations/fortune-wheel-booth-backend/fortune-wheel-bo
 import { Dispatch, SetStateAction } from 'react';
 
 export interface ModalPrizeProps {
-  prizeNumber: Prize;
+  prizeNumber: number;
   setShowModalPrize: Dispatch<SetStateAction<boolean>>;
   setMustSpin: Dispatch<SetStateAction<boolean>>;
 }

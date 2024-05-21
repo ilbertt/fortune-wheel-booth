@@ -1,19 +1,22 @@
 import Fireworks from './Fireworks';
-import { findPrize } from '../utils/findPrize';
 import CloseIcon from '../assets/close.svg';
 import { ModalPrizeProps } from '../types';
 import { PRIZES, PRIZES_VALUES_MAPPING } from '../costants';
+import { useMemo } from 'react';
 
 export default function ModalPrize({
   prizeNumber,
   setShowModalPrize,
   setMustSpin,
 }: ModalPrizeProps) {
-  const wonPrize = PRIZES[findPrize(Object.keys(prizeNumber)[0])];
-  const wonPrizeValue =
-    PRIZES_VALUES_MAPPING[
-      wonPrize.option as keyof typeof PRIZES_VALUES_MAPPING
-    ];
+  const wonPrize = useMemo(() => PRIZES[prizeNumber], [prizeNumber]);
+  const wonPrizeValue = useMemo(
+    () =>
+      PRIZES_VALUES_MAPPING[
+        wonPrize.option as keyof typeof PRIZES_VALUES_MAPPING
+      ],
+    [wonPrize]
+  );
 
   return (
     <div className='absolute flex justify-center items-center backdrop-blur-2xl h-full w-full z-20 flex-col'>

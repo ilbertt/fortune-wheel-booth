@@ -4,7 +4,6 @@ import FortuneWheel from '../src/components/FortuneWheel';
 import ModalPrize from '../src/components/ModalPrize';
 import { findPrize } from '../src/utils/findPrize';
 import { Principal } from '@dfinity/principal';
-import { type ActorSubclass } from '@dfinity/agent';
 import {
   _SERVICE,
   Extraction,
@@ -14,12 +13,13 @@ import {
   createActor,
 } from '../../declarations/fortune-wheel-booth-backend';
 
+const ACTOR = createActor(canisterId);
+
 function FortuneWheelPage() {
   const [showModalPrize, setShowModalPrize] = useState(false);
   const [lastExtraction, setLastExtraction] =
     useState<[Principal, Extraction]>();
   const [mustSpin, setMustSpin] = useState(false);
-  const [actor, setActor] = useState<ActorSubclass<_SERVICE>>();
   const [prizeNumber, setPrizeNumber] = useState<number>(0);
 
   useEffect(() => {
@@ -31,45 +31,32 @@ function FortuneWheelPage() {
   }, [showModalPrize]);
 
   useEffect(() => {
-    const actor = createActor(canisterId);
-    setActor(actor);
-  }, []);
-
-  useEffect(() => {
     const extractPrizeInterval = setInterval(extractPrize, 2000);
     return () => {
       clearInterval(extractPrizeInterval);
     };
-  }, [actor, mustSpin, lastExtraction]);
+  }, [mustSpin, lastExtraction]);
 
   const extractPrize = useCallback(async () => {
-    const _lastExtraction = await actor?.getLastExtraction();
+    const newExtraction = await ACTOR?.getLastExtraction();
     if (
       !mustSpin &&
-      _lastExtraction &&
-      _lastExtraction[0] &&
-      _lastExtraction.length > 0
+      newExtraction &&
+      newExtraction.length > 0 &&
+      newExtraction[0]
     ) {
-      const lastExtractedPrincipal = _lastExtraction[0][0];
+      const lastExtractedPrincipal = newExtraction[0][0];
       if (
-        lastExtraction &&
-        'eq' !== lastExtractedPrincipal.compareTo(lastExtraction[0])
+        !lastExtraction ||
+        (lastExtraction &&
+          'eq' !== lastExtractedPrincipal.compareTo(lastExtraction[0]))
       ) {
         setMustSpin(true);
-        setLastExtraction(_lastExtraction[0]);
-      } else if (!lastExtraction) {
-        //  first extraction of the cycle
-        setLastExtraction(_lastExtraction[0]);
-        setMustSpin(true);
+        setLastExtraction(newExtraction[0]);
+        setPrizeNumber(findPrize(Object.keys(newExtraction[0][1].prize)[0]));
       }
     }
-  }, [actor, mustSpin, lastExtraction]);
-
-  useEffect(() => {
-    if (lastExtraction) {
-      setPrizeNumber(findPrize(Object.keys(lastExtraction[1].prize)[0]));
-    }
-  }, [lastExtraction]);
+  }, [mustSpin, lastExtraction]);
 
   return (
     <main className='flex justify-center items-center flex-col relative h-full'>
@@ -88,7 +75,7 @@ function FortuneWheelPage() {
       )}
       <img
         className='absolute bottom-5 left-5 h-[4vw] z-20'
-        src='/logo2.svg'
+        src='/logo2.png'
         alt='DFINITY logo'
       />
     </main>
