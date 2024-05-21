@@ -1,68 +1,15 @@
 import { Scanner } from '@yudiel/react-qr-scanner';
-import { useCallback, useEffect, useState } from 'react';
-import {
-  canisterId,
-  createActor,
-} from 'declarations/fortune-wheel-booth-backend';
-import { AuthClient } from '@dfinity/auth-client';
-import { HttpAgent } from '@dfinity/agent';
+import { useEffect, useState } from 'react';
 import { _SERVICE } from 'declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did';
-import { type ActorSubclass, Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import icpLogo from './assets/images/icp-logo-dark.png';
+import useIcState from './hooks/useIcState';
 
 export default function Home() {
-  const [adminActor, setAdminActor] = useState<ActorSubclass<_SERVICE>>();
-  const [adminPrincipal, setAdminPrincipal] = useState<Principal>();
+  const { isAnonymous, logout, handleLogin, adminActor, adminPrincipal } =
+    useIcState();
   const [canisterErrorResponse, setCanisterErrorResponse] = useState<string>();
   const [prizeExtracted, setPrizeExtracted] = useState<boolean>(false);
-
-  const setupIcState = useCallback((identity: Identity) => {
-    const agent = new HttpAgent({ identity });
-    const actor = createActor(canisterId, {
-      agent,
-    });
-    setAdminActor(actor);
-
-    setAdminPrincipal(identity.getPrincipal());
-    console.log(adminPrincipal);
-  }, []);
-
-  const resetIcState = useCallback(() => {
-    setAdminActor(undefined);
-    setAdminPrincipal(Principal.anonymous());
-  }, []);
-
-  const handleLogin = useCallback(async () => {
-    const authClient = await AuthClient.create();
-
-    // start the login process and wait for it to finish
-    await new Promise((resolve) => {
-      authClient.login({
-        identityProvider:
-          process.env.DFX_NETWORK === 'ic'
-            ? 'https://identity.ic0.app'
-            : `http://rdmx6-jaaaa-aaaaa-aaadq-cai.localhost:4943/`,
-        onSuccess: resolve,
-      });
-    });
-
-    const identity = authClient.getIdentity();
-    setupIcState(identity);
-  }, [setupIcState]);
-
-  useEffect(() => {
-    (async () => {
-      const authClient = await AuthClient.create();
-
-      const authenticated = await authClient.isAuthenticated();
-      if (authenticated) {
-        setupIcState(authClient.getIdentity());
-      } else {
-        resetIcState();
-      }
-    })();
-  }, [setupIcState, resetIcState]);
 
   useEffect(() => {
     setInterval(() => {
@@ -88,18 +35,9 @@ export default function Home() {
     }
   };
 
-  const logout = useCallback(async () => {
-    if (adminActor) {
-      await (await AuthClient.create()).logout();
-      resetIcState();
-    }
-  }, [adminActor, resetIcState]);
-
   if (!adminPrincipal) {
     return <div>Loading...</div>;
   }
-
-  const isAnonymous = adminPrincipal.isAnonymous();
 
   return (
     <>

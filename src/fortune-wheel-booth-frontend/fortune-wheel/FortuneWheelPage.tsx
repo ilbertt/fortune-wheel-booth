@@ -67,11 +67,11 @@ function FortuneWheelPage() {
         mustSpin={mustSpin}
       />
       {showModalPrize && (
-        <ModalPrize
-          prizeNumber={prizeNumber}
-          setShowModalPrize={setShowModalPrize}
-          setMustSpin={setMustSpin}
-        />
+          <ModalPrize
+            prizeNumber={prizeNumber}
+            setShowModalPrize={setShowModalPrize}
+            setMustSpin={setMustSpin}
+          />
       )}
       <img
         className='absolute bottom-5 left-5 h-[4vw] z-20'
