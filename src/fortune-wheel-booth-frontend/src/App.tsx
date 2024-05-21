@@ -1,29 +1,44 @@
-import { useState } from 'react';
-import { fortune_wheel_booth_backend } from 'declarations/fortune-wheel-booth-backend';
+import { useEffect, useState } from "react";
+import FortuneWheel from "./components/FortuneWheel";
+import ModalPrize from "./components/ModalPrize";
+import { type Prize } from "declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did";
+import { findPrize } from "./utils/findPrize";
+
+const mockCanisterResponse: Prize = {
+  icp1: 10n,
+}; // TODO: Implement real canister response
 
 function App() {
-  const [greeting, setGreeting] = useState('');
+  const [showModalPrize, setShowModalPrize] = useState(false);
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    fortune_wheel_booth_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
-  }
+  useEffect(() => {
+    if (showModalPrize) setTimeout(() => setShowModalPrize(false), 8000);
+  }, [showModalPrize]);
 
   return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
+    <main className="flex justify-center items-center flex-col relative h-full">
+      <div className="flex justify-center items-center absolute top-10 left-5 h-[3vw]">
+        <img
+          className="h-full"
+          src="src/assets/hub-logo-light.svg"
+          alt="hub logo logo"
+        />
+      </div>
+      <FortuneWheel
+        setShowModalPrize={setShowModalPrize}
+        prizeNumber={findPrize(Object.keys(mockCanisterResponse)[0])}
+      />
+      {showModalPrize && (
+        <ModalPrize
+          prizeNumber={mockCanisterResponse}
+          setShowModalPrize={setShowModalPrize}
+        />
+      )}
+      <img
+        className="absolute bottom-5 right-5 h-[4vw]"
+        src="/logo2.svg"
+        alt="DFINITY logo"
+      />
     </main>
   );
 }
