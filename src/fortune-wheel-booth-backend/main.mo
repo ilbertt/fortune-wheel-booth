@@ -8,6 +8,7 @@ import Option "mo:base/Option";
 import Random "mo:base/Random";
 import Nat "mo:base/Nat";
 import Order "mo:base/Order";
+import Buffer "mo:base/Buffer";
 import Fuzz "mo:fuzz";
 
 import IcpLedger "canister:icp_ledger";
@@ -16,14 +17,10 @@ import ckEthLedger "canister:cketh_ledger";
 
 shared ({ caller = initialController }) actor class Main() {
   type Prize = {
-    #icp0_5 : Nat;
-    #icp1 : Nat;
-    #ckBtc0_0001 : Nat;
-    #ckBtc0_0005 : Nat;
-    #ckEth0_005 : Nat;
-    #ckEth0_01 : Nat;
-    #merchTshirt;
-    #merchHat;
+    #icp : Nat;
+    #ckBtc : Nat;
+    #ckEth : Nat;
+    #merch;
   };
 
   type Extraction = {
@@ -32,30 +29,39 @@ shared ({ caller = initialController }) actor class Main() {
     transactionBlockIndex : ?Nat;
   };
 
-  stable let prizes : [Prize] = [
+  /// The ?Nat8 is the quantity available for that prize. `null` means unlimited.
+  ///
+  /// The prizes with a maximum quantity are removed when they reach 0.
+  private stable var prizesEntries : [(Prize, ?Nat8)] = [
     // ICP and ckBTC have 8 decimals: 100_000_000
-    #icp0_5(50_000_000),
-    #icp1(100_000_000),
-    #ckBtc0_0001(10_000),
-    #ckBtc0_0005(50_000),
+    (#icp(100_000_000), ?10), // 1 ICP ~ $13
+    (#ckBtc(7_000), ?10), // 0.00007 ckBTC ~ $5
     // ckETH has 18 decimals: 1_000_000_000_000_000_000
-    #ckEth0_005(5_000_000_000_000_000),
-    #ckEth0_01(10_000_000_000_000_000),
-    #merchTshirt,
-    #merchHat,
+    (#ckEth(1_500_000_000_000_000), ?10), // 0.0015 ckETH ~ $5
+    // increase the probability of getting the merch prize by repeating it
+    (#merch, null),
+    (#merch, null),
+    (#merch, null),
+    (#merch, null),
+    (#merch, null),
+    (#merch, null),
+    (#merch, null),
   ];
+  let prizes : Buffer.Buffer<(Prize, ?Nat8)> = Buffer.fromArray(prizesEntries);
 
   private stable var adminPrincipals : List.List<Principal> = ?(initialController, null);
 
-  // persist non-stable structures: https://internetcomputer.org/docs/current/motoko/main/canister-maintenance/upgrades#preupgrade-and-postupgrade-system-methods
   private stable var extractedPrincipalsEntries : [(Principal, Extraction)] = [];
   private let extractedPrincipals = TrieMap.fromEntries<Principal, Extraction>(extractedPrincipalsEntries.vals(), Principal.equal, Principal.hash);
 
+  // persist non-stable structures: https://internetcomputer.org/docs/current/motoko/main/canister-maintenance/upgrades#preupgrade-and-postupgrade-system-methods
   system func preupgrade() {
+    prizesEntries := Buffer.toArray(prizes);
     extractedPrincipalsEntries := Iter.toArray(extractedPrincipals.entries());
   };
 
   system func postupgrade() {
+    prizesEntries := [];
     extractedPrincipalsEntries := [];
   };
 
@@ -95,22 +101,13 @@ shared ({ caller = initialController }) actor class Main() {
     let prize = await getRandomPrize();
 
     let transactionBlockIndex = switch (prize) {
-      case (#icp0_5(amount)) {
+      case (#icp(amount)) {
         ?(await transferIcp(receiver, amount));
       };
-      case (#icp1(amount)) {
-        ?(await transferIcp(receiver, amount));
-      };
-      case (#ckBtc0_0001(amount)) {
+      case (#ckBtc(amount)) {
         ?(await transferCkBtc(receiver, amount));
       };
-      case (#ckBtc0_0005(amount)) {
-        ?(await transferCkBtc(receiver, amount));
-      };
-      case (#ckEth0_005(amount)) {
-        ?(await transferCkEth(receiver, amount));
-      };
-      case (#ckEth0_01(amount)) {
+      case (#ckEth(amount)) {
         ?(await transferCkEth(receiver, amount));
       };
       case (_) { null };
@@ -128,10 +125,30 @@ shared ({ caller = initialController }) actor class Main() {
   };
 
   private func getRandomPrize() : async Prize {
-    let fuzz = Fuzz.fromBlob(await Random.blob());
+    let lastIndex : Nat = prizes.size() - 1;
+    if (lastIndex == 0) {
+      return prizes.get(0).0;
+    };
 
-    let randIndex = fuzz.nat.randomRange(0, (prizes.size() - 1));
-    prizes[randIndex];
+    let fuzz = Fuzz.fromBlob(await Random.blob());
+    let randIndex = fuzz.nat.randomRange(0, lastIndex);
+    let (prize, availableQuantity) = prizes.get(randIndex);
+
+    switch (availableQuantity) {
+      case (?qty) {
+        if (qty == 1) {
+          ignore prizes.remove(randIndex);
+        } else {
+          prizes.put(randIndex, (prize, ?(qty - 1)));
+        };
+
+        prize;
+      };
+      case (null) {
+        // unlimited quantity, just return the prize
+        prize;
+      };
+    };
   };
 
   private func transferIcp(receiver : Principal, amount : Nat) : async Nat {
@@ -267,5 +284,21 @@ shared ({ caller = initialController }) actor class Main() {
         await transferCkEth(receiver, amount);
       };
     };
+  };
+
+  public shared query ({ caller }) func getAdmins() : async [Principal] {
+    if (not isAdmin(caller)) {
+      throw Error.reject("Only admins can read admins");
+    };
+
+    List.toArray(adminPrincipals);
+  };
+
+  public shared query ({ caller }) func getAvailablePrizes() : async [(Prize, ?Nat8)] {
+    if (not isAdmin(caller)) {
+      throw Error.reject("Only admins can read prizes");
+    };
+
+    Buffer.toArray(prizes);
   };
 };

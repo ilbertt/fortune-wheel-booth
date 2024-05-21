@@ -93,6 +93,18 @@ dfx canister call fortune-wheel-booth-backend send '(
 )'
 ```
 
+To fetch the list of admins, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend getAdmins
+```
+
+To fetch the available prizes, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend getAvailablePrizes
+```
+
 > For ICP and ckBTC, the amount is specified in the format: 1 ICP = 10^8 token amount.
 >
 > For ckETH, the amount is specified in the format: 1 ckETH = 10^18 token amount.
