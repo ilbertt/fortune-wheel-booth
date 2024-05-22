@@ -60,11 +60,11 @@ function FortuneWheelPage() {
 
   return (
     <main className='flex justify-center items-center flex-col relative h-full'>
-      <div className="flex justify-center items-center absolute top-10 left-5 h-[3vw]">
+      <div className='flex justify-center items-center absolute top-10 left-5 h-[3vw]'>
         <img
-          className="h-full"
-          src="src/assets/hub-logo-light.svg"
-          alt="hub logo logo"
+          className='h-full'
+          src='../src/assets/hub-logo-light.svg'
+          alt='hub logo logo'
         />
       </div>
       <FortuneWheel
@@ -73,14 +73,14 @@ function FortuneWheelPage() {
         mustSpin={mustSpin}
       />
       {showModalPrize && (
-          <ModalPrize
-            prizeNumber={prizeNumber}
-            setShowModalPrize={setShowModalPrize}
-            setMustSpin={setMustSpin}
-          />
+        <ModalPrize
+          prizeNumber={prizeNumber}
+          setShowModalPrize={setShowModalPrize}
+          setMustSpin={setMustSpin}
+        />
       )}
       <img
-        className='absolute bottom-5 left-5 h-[4vw] z-20'
+        className='absolute bottom-5 right-5 h-[4vw] z-20'
         src='/logo2.png'
         alt='DFINITY logo'
       />
