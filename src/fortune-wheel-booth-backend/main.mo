@@ -6,9 +6,10 @@ import TrieMap "mo:base/TrieMap";
 import Error "mo:base/Error";
 import Option "mo:base/Option";
 import Random "mo:base/Random";
-import Nat8 "mo:base/Nat8";
 import Nat "mo:base/Nat";
 import Order "mo:base/Order";
+import Buffer "mo:base/Buffer";
+import Fuzz "mo:fuzz";
 
 import IcpLedger "canister:icp_ledger";
 import ckBtcLedger "canister:ckbtc_ledger";
@@ -16,14 +17,10 @@ import ckEthLedger "canister:cketh_ledger";
 
 shared ({ caller = initialController }) actor class Main() {
   type Prize = {
-    #icp0_5 : Nat;
-    #icp1 : Nat;
-    #ckBtc0_001 : Nat;
-    #ckBtc0_005 : Nat;
-    #ckEth0_01 : Nat;
-    #ckEth0_05 : Nat;
-    #merchTshirt;
-    #merchHat;
+    #icp : Nat;
+    #ckBtc : Nat;
+    #ckEth : Nat;
+    #merch;
   };
 
   type Extraction = {
@@ -32,34 +29,39 @@ shared ({ caller = initialController }) actor class Main() {
     transactionBlockIndex : ?Nat;
   };
 
-  /// Must have a size that is a power of 2
-  /// to have the random index extraction work properly.
+  /// The ?Nat8 is the quantity available for that prize. `null` means unlimited.
   ///
-  /// See the comment in the `getRandomPrize` method.
-  stable let prizes : [Prize] = [
+  /// The prizes with a maximum quantity are removed when they reach 0.
+  private stable var prizesEntries : [(Prize, ?Nat8)] = [
     // ICP and ckBTC have 8 decimals: 100_000_000
-    #icp0_5(50_000_000),
-    #icp1(100_000_000),
-    #ckBtc0_001(100_000),
-    #ckBtc0_005(500_000),
+    (#icp(100_000_000), ?10), // 1 ICP ~ $13
+    (#ckBtc(7_000), ?10), // 0.00007 ckBTC ~ $5
     // ckETH has 18 decimals: 1_000_000_000_000_000_000
-    #ckEth0_01(10_000_000_000_000_000),
-    #ckEth0_05(50_000_000_000_000_000),
-    #merchTshirt,
-    #merchHat,
+    (#ckEth(1_500_000_000_000_000), ?10), // 0.0015 ckETH ~ $5
+    // increase the probability of getting the merch prize by repeating it
+    (#merch, null),
+    (#merch, null),
+    (#merch, null),
+    (#merch, null),
+    (#merch, null),
+    (#merch, null),
+    (#merch, null),
   ];
+  let prizes : Buffer.Buffer<(Prize, ?Nat8)> = Buffer.fromArray(prizesEntries);
 
   private stable var adminPrincipals : List.List<Principal> = ?(initialController, null);
 
-  // persist non-stable structures: https://internetcomputer.org/docs/current/motoko/main/canister-maintenance/upgrades#preupgrade-and-postupgrade-system-methods
   private stable var extractedPrincipalsEntries : [(Principal, Extraction)] = [];
   private let extractedPrincipals = TrieMap.fromEntries<Principal, Extraction>(extractedPrincipalsEntries.vals(), Principal.equal, Principal.hash);
 
+  // persist non-stable structures: https://internetcomputer.org/docs/current/motoko/main/canister-maintenance/upgrades#preupgrade-and-postupgrade-system-methods
   system func preupgrade() {
+    prizesEntries := Buffer.toArray(prizes);
     extractedPrincipalsEntries := Iter.toArray(extractedPrincipals.entries());
   };
 
   system func postupgrade() {
+    prizesEntries := [];
     extractedPrincipalsEntries := [];
   };
 
@@ -85,45 +87,34 @@ shared ({ caller = initialController }) actor class Main() {
     };
 
     if (Principal.isAnonymous(receiver)) {
-      throw Error.reject("Anonymous principals cannot receive prizes");
+      throw Error.reject("Anonymous principal cannot receive prizes");
     };
 
     if (Principal.fromText("aaaaa-aa") == receiver) {
-      throw Error.reject("Reserved principal cannot receive prizes");
+      throw Error.reject("Management canister cannot receive prizes");
     };
 
     if (isPrincipalExtracted(receiver)) {
       throw Error.reject("Already extracted for this principal");
     };
 
-    let extractedAt = Time.now();
-
     let prize = await getRandomPrize();
 
     let transactionBlockIndex = switch (prize) {
-      case (#icp0_5(amount)) {
+      case (#icp(amount)) {
         ?(await transferIcp(receiver, amount));
       };
-      case (#icp1(amount)) {
-        ?(await transferIcp(receiver, amount));
-      };
-      case (#ckBtc0_001(amount)) {
+      case (#ckBtc(amount)) {
         ?(await transferCkBtc(receiver, amount));
       };
-      case (#ckBtc0_005(amount)) {
-        ?(await transferCkBtc(receiver, amount));
-      };
-      case (#ckEth0_01(amount)) {
-        ?(await transferCkEth(receiver, amount));
-      };
-      case (#ckEth0_05(amount)) {
+      case (#ckEth(amount)) {
         ?(await transferCkEth(receiver, amount));
       };
       case (_) { null };
     };
 
     let extraction : Extraction = {
-      extractedAt;
+      extractedAt = Time.now();
       prize;
       transactionBlockIndex;
     };
@@ -134,22 +125,37 @@ shared ({ caller = initialController }) actor class Main() {
   };
 
   private func getRandomPrize() : async Prize {
-    let random = Random.Finite(await Random.blob());
+    let lastIndex : Nat = prizes.size() - 1;
+    if (lastIndex == 0) {
+      return prizes.get(0).0;
+    };
 
-    // the result of log(prizes.size())
-    // since the random.range method extracts
-    // a random number between 0 and (2^rangeExponent) - 1
-    let rangeExponent : Nat8 = 3;
+    let fuzz = Fuzz.fromBlob(await Random.blob());
+    let randIndex = fuzz.nat.randomRange(0, lastIndex);
+    let (prize, availableQuantity) = prizes.get(randIndex);
 
-    switch (random.range(rangeExponent)) {
-      case (?index) { prizes[index] };
+    switch (availableQuantity) {
+      case (?qty) {
+        if (qty == 1) {
+          ignore prizes.remove(randIndex);
+        } else {
+          prizes.put(randIndex, (prize, ?(qty - 1)));
+        };
+
+        prize;
+      };
       case (null) {
-        throw Error.reject("Failed to get random number");
+        // unlimited quantity, just return the prize
+        prize;
       };
     };
   };
 
   private func transferIcp(receiver : Principal, amount : Nat) : async Nat {
+    if (amount > 100_000_000) {
+      throw Error.reject("ICP amount must be less than 100_000_000");
+    };
+
     let transferRes = await IcpLedger.icrc1_transfer({
       from_subaccount = null;
       to = { owner = receiver; subaccount = null };
@@ -170,6 +176,10 @@ shared ({ caller = initialController }) actor class Main() {
   };
 
   private func transferCkBtc(receiver : Principal, amount : Nat) : async Nat {
+    if (amount > 50_000) {
+      throw Error.reject("ckBTC amount must be less than 50_000");
+    };
+
     let transferRes = await ckBtcLedger.icrc1_transfer({
       from_subaccount = null;
       to = { owner = receiver; subaccount = null };
@@ -190,6 +200,10 @@ shared ({ caller = initialController }) actor class Main() {
   };
 
   private func transferCkEth(receiver : Principal, amount : Nat) : async Nat {
+    if (amount > 10_000_000_000_000_000) {
+      throw Error.reject("ckETH amount must be less than 10_000_000_000_000_000");
+    };
+
     let transferRes = await ckEthLedger.icrc1_transfer({
       from_subaccount = null;
       to = { owner = receiver; subaccount = null };
@@ -233,5 +247,58 @@ shared ({ caller = initialController }) actor class Main() {
     );
 
     sorted_entries.next();
+  };
+
+  type ManualSendTokens = {
+    #icp : Nat;
+    #ckBtc : Nat;
+    #ckEth : Nat;
+  };
+
+  type ManualSendArgs = {
+    receiver : Principal;
+    tokens : ManualSendTokens;
+  };
+
+  public shared ({ caller }) func manualTransfer({ receiver; tokens } : ManualSendArgs) : async Nat {
+    if (not isAdmin(caller)) {
+      throw Error.reject("Only admins can manually send");
+    };
+
+    if (Principal.isAnonymous(receiver)) {
+      throw Error.reject("Cannot send to anonymous principal");
+    };
+
+    if (Principal.fromText("aaaaa-aa") == receiver) {
+      throw Error.reject("Cannot send to management canister");
+    };
+
+    switch (tokens) {
+      case (#icp(amount)) {
+        await transferIcp(receiver, amount);
+      };
+      case (#ckBtc(amount)) {
+        await transferCkBtc(receiver, amount);
+      };
+      case (#ckEth(amount)) {
+        await transferCkEth(receiver, amount);
+      };
+    };
+  };
+
+  public shared query ({ caller }) func getAdmins() : async [Principal] {
+    if (not isAdmin(caller)) {
+      throw Error.reject("Only admins can read admins");
+    };
+
+    List.toArray(adminPrincipals);
+  };
+
+  public shared query ({ caller }) func getAvailablePrizes() : async [(Prize, ?Nat8)] {
+    if (not isAdmin(caller)) {
+      throw Error.reject("Only admins can read prizes");
+    };
+
+    Buffer.toArray(prizes);
   };
 };

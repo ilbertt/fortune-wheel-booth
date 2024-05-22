@@ -1,2 +1,3 @@
 [dependencies]
 base = "0.11.1"
+fuzz = "0.2.1"
