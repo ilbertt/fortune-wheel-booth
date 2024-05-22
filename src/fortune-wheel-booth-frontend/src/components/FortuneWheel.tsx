@@ -1,26 +1,20 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { Wheel } from "react-custom-roulette";
-import { PRIZES } from "../costants";
-import IcpLogo from "../assets/images/icp-logo-dark.png";
-import Pointer from "../assets/images/pointer.png";
+import { Wheel } from 'react-custom-roulette';
+import { PRIZES } from '../costants';
+import IcpLogo from '../assets/images/icp-logo-dark.png';
+import Pointer from '../assets/images/pointer.png';
+import { Dispatch, SetStateAction } from 'react';
 
 interface FortuneWheelProps {
   setShowModalPrize: Dispatch<SetStateAction<boolean>>;
   prizeNumber: number;
+  mustSpin: boolean;
 }
 
 export default function FortuneWheel({
   setShowModalPrize,
   prizeNumber,
+  mustSpin,
 }: FortuneWheelProps) {
-  const [mustSpin, setMustSpin] = useState(false);
-
-  const handleSpinClick = () => {
-    if (!mustSpin) {
-      setMustSpin(true);
-    }
-  };
-
   return (
     <div className="relative wheel-container">
       <Wheel
@@ -28,7 +22,6 @@ export default function FortuneWheel({
         prizeNumber={prizeNumber}
         data={PRIZES}
         onStopSpinning={() => {
-          setMustSpin(false);
           setShowModalPrize(true);
         }}
         outerBorderWidth={0}
@@ -42,12 +35,6 @@ export default function FortuneWheel({
         src={IcpLogo}
         alt="icp logo"
       />
-      <button
-        className="absolute z-10 bottom-2/4 -left-24 bg-white rounded-md px-3"
-        onClick={handleSpinClick}
-      >
-        SPIN
-      </button>
     </div>
   );
 }
