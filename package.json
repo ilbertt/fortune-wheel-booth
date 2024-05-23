@@ -6,7 +6,8 @@
     "prebuild": "pnpm run -r prebuild",
     "pretest": "pnpm run -r prebuild",
     "start": "pnpm run -r start",
-    "test": "pnpm run -r test"
+    "test": "pnpm run -r test",
+    "prepare": "husky"
   },
   "type": "module",
   "engines": {
