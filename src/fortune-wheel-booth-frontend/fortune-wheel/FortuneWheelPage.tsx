@@ -61,11 +61,7 @@ function FortuneWheelPage() {
   return (
     <main className='flex justify-center items-center flex-col relative h-full'>
       <div className='flex justify-center items-center absolute top-10 left-5 h-[3vw]'>
-        <img
-          className='h-full'
-          src='../src/assets/hub-logo-light.svg'
-          alt='hub logo logo'
-        />
+        <img className='h-full' src='/hub-logo-light.svg' alt='hub logo logo' />
       </div>
       <FortuneWheel
         setShowModalPrize={setShowModalPrize}
