@@ -1,0 +1,1 @@
+cd src/fortune-wheel-booth-frontend/ && pnpm format

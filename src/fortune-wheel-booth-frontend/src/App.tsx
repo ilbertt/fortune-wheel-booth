@@ -2,7 +2,6 @@ import { Scanner } from '@yudiel/react-qr-scanner';
 import { useEffect, useState } from 'react';
 import { _SERVICE } from 'declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did';
 import { Principal } from '@dfinity/principal';
-import icpItChLogo from './assets/hub-logo-light.svg';
 import icpMainLogo from './assets/icp-main-logo.svg';
 import useIcState from './hooks/useIcState';
 
