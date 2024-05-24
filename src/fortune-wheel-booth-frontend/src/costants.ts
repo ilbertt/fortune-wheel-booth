@@ -1,6 +1,7 @@
 import Astronaut from './assets/images/astronaut-loader.png';
 import ckBtc from './assets/images/ckbtc.png';
 import ckEth from './assets/images/cketh.png';
+import ckUsdc from './assets/images/ckusdc.svg';
 import IcpLogoLight from './assets/images/icp-logo-light.png';
 import { WheelDataType } from 'react-custom-roulette';
 
@@ -16,8 +17,8 @@ export const PRIZES: WheelDataType[] = [
     style: { backgroundColor: '#28ABE2' },
   },
   {
-    option: 'merch',
-    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
+    option: 'ckUsdc',
+    image: { uri: ckUsdc, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#F36526' },
   },
   {
@@ -58,8 +59,9 @@ export const PRIZES: WheelDataType[] = [
 ];
 
 export const PRIZES_VALUES_MAPPING: Record<string, string> = {
-  ckEth: '0.0015 ckETH',
-  icp: '1 ICP',
-  ckBtc: '0.00007 ckBTC',
+  ckEth: '0.00026 ckETH',
+  icp: '0.082 ICP',
+  ckBtc: '0.000015 ckBTC',
+  ckUsdc: '1 ckUSDC',
   merch: 'merchandise',
 };

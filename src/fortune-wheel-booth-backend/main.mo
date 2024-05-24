@@ -14,12 +14,14 @@ import Fuzz "mo:fuzz";
 import IcpLedger "canister:icp_ledger";
 import ckBtcLedger "canister:ckbtc_ledger";
 import ckEthLedger "canister:cketh_ledger";
+import ckUsdcLedger "canister:ckusdc_ledger";
 
 shared ({ caller = initialController }) actor class Main() {
   type Prize = {
     #icp : Nat;
     #ckBtc : Nat;
     #ckEth : Nat;
+    #ckUsdc : Nat;
     #merch;
   };
 
@@ -34,12 +36,13 @@ shared ({ caller = initialController }) actor class Main() {
   /// The prizes with a maximum quantity are removed when they reach 0.
   private stable var prizesEntries : [(Prize, ?Nat8)] = [
     // ICP and ckBTC have 8 decimals: 100_000_000
-    (#icp(100_000_000), ?10), // 1 ICP ~ $13
-    (#ckBtc(7_000), ?10), // 0.00007 ckBTC ~ $5
+    (#icp(8_200_000), ?10), // 0.082 ICP ~ $1
+    (#ckBtc(1_500), ?10), // 0.000015 ckBTC ~ $1
     // ckETH has 18 decimals: 1_000_000_000_000_000_000
-    (#ckEth(1_500_000_000_000_000), ?10), // 0.0015 ckETH ~ $5
+    (#ckEth(260_000_000_000_000), ?10), // 0.00026 ckETH ~ $1
+    // ckUSDC has 6 decimals: 1_000_000
+    (#ckUsdc(1_000_000), ?10), // 1 ckUSDC ~ $1
     // increase the probability of getting the merch prize by repeating it
-    (#merch, null),
     (#merch, null),
     (#merch, null),
     (#merch, null),
@@ -109,6 +112,9 @@ shared ({ caller = initialController }) actor class Main() {
       };
       case (#ckEth(amount)) {
         ?(await transferCkEth(receiver, amount));
+      };
+      case (#ckUsdc(amount)) {
+        ?(await transferCkUsdc(receiver, amount));
       };
       case (_) { null };
     };
@@ -205,6 +211,30 @@ shared ({ caller = initialController }) actor class Main() {
     };
 
     let transferRes = await ckEthLedger.icrc1_transfer({
+      from_subaccount = null;
+      to = { owner = receiver; subaccount = null };
+      amount;
+      fee = null;
+      memo = null;
+      created_at_time = null;
+    });
+
+    switch (transferRes) {
+      case (#Ok(value)) {
+        value;
+      };
+      case (#Err(error)) {
+        throw Error.reject(debug_show (error));
+      };
+    };
+  };
+
+  private func transferCkUsdc(receiver : Principal, amount : Nat) : async Nat {
+    if (amount > 1_100_000) {
+      throw Error.reject("ckBTC amount must be less than 1_100_000");
+    };
+
+    let transferRes = await ckUsdcLedger.icrc1_transfer({
       from_subaccount = null;
       to = { owner = receiver; subaccount = null };
       amount;
