@@ -88,6 +88,8 @@ deploy_ledger "ryjl3-tyaaa-aaaaa-aaaba-cai" "icp_ledger" "LICP" "Local ICP" 8 10
 deploy_ledger "mxzaz-hqaaa-aaaar-qaada-cai" "ckbtc_ledger" "LckBTC" "Local ckBTC" 8 100_000_000_000
 #ckETH (1 initial balance)
 deploy_ledger "ss2fx-dyaaa-aaaar-qacoq-cai" "cketh_ledger" "LckETH" "Local ckETH" 18 1_000_000_000_000_000_000
+# ckUSDC (1000 initial balance)
+deploy_ledger "xevnm-gaaaa-aaaar-qafnq-cai" "ckusdc_ledger" "LckUSDC" "Local ckUSDC" 6 1_000_000_000
 
 echo -e "\n Deployed all ledger canisters\n"
 
@@ -127,6 +129,8 @@ top_up_backend_canister icp_ledger 50_000_000_000
 top_up_backend_canister ckbtc_ledger 50_000_000_000
 # transfer 0.5 ckETH to backend
 top_up_backend_canister cketh_ledger 500_000_000_000_000_000
+# transfer 100 ckUSDC to backend
+top_up_backend_canister ckusdc_ledger 100_000_000
 
 echo -e "\nDeploying frontend canister...\n"
 dfx deploy $FRONTEND_CANISTER_NAME

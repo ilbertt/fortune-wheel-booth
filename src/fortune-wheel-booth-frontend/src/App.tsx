@@ -2,7 +2,6 @@ import { Scanner } from '@yudiel/react-qr-scanner';
 import { useEffect, useState } from 'react';
 import { _SERVICE } from 'declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did';
 import { Principal } from '@dfinity/principal';
-import icpItChLogo from './assets/hub-logo-light.svg';
 import icpMainLogo from './assets/icp-main-logo.svg';
 import useIcState from './hooks/useIcState';
 
@@ -50,7 +49,7 @@ export default function Home() {
         <div className='flex h-full w-full flex-col items-center justify-center gap-4'>
           <img
             className='absolute left-0 right-0 top-10 z-20 m-auto h-32'
-            src={icpItChLogo}
+            src='/hub-logo-light.svg'
             alt='icpItCh logo'
           />
           {canisterErrorResponse && (
