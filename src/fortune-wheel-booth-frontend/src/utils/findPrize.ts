@@ -1,11 +1,22 @@
 import { PRIZES } from '../costants';
 
+const getMerchPrizesIndexes = () => {
+  const merchPrizes: number[] = PRIZES.reduce((acc: number[], prize, index) => {
+    if (prize?.option?.includes('merch')) {
+      acc.push(index);
+    }
+    return acc;
+  }, []);
+
+  return merchPrizes;
+};
+
 export const findPrize = (option: string) => {
   if (option === 'merch') {
-    const merchNumbers = [1, 2, 3, 4, 5, 6];
-    option =
-      'merch' + merchNumbers[Math.floor(Math.random() * merchNumbers.length)];
+    const merchPrizesIndexes: number[] = getMerchPrizesIndexes();
+    return merchPrizesIndexes[
+      Math.floor(Math.random() * merchPrizesIndexes.length)
+    ];
   }
-  const prizeIndex = PRIZES.findIndex((prize) => prize.option === option);
-  return prizeIndex ?? 99; // TODO: Fix this, 99 represents "no prize exists for this option"
+  return PRIZES.findIndex((prize) => prize.option === option); // Returns the index of the first element in the array where predicate is true, and -1 otherwise.
 };

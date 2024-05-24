@@ -15,12 +15,13 @@ export default function ModalPrize({
   setMustSpin,
 }: ModalPrizeProps) {
   const wonPrize = useMemo(() => PRIZES[prizeNumber], [prizeNumber]);
-  const wonPrizeValue = useMemo(() => {
-    if (wonPrize?.option?.includes('merch')) return PRIZES_VALUES_MAPPING.merch;
-    return PRIZES_VALUES_MAPPING[
-      wonPrize.option as keyof typeof PRIZES_VALUES_MAPPING
-    ];
-  }, [wonPrize]);
+  const wonPrizeValue = useMemo(
+    () =>
+      PRIZES_VALUES_MAPPING[
+        wonPrize.option as keyof typeof PRIZES_VALUES_MAPPING
+      ],
+    [wonPrize]
+  );
 
   return (
     <div className='absolute z-20 flex h-full w-full flex-col items-center justify-center backdrop-blur-2xl'>

@@ -12,7 +12,7 @@ export const PRIZES: WheelDataType[] = [
     style: { backgroundColor: '#00155C' },
   },
   {
-    option: 'merch1',
+    option: 'merch',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#28ABE2' },
   },
@@ -22,7 +22,7 @@ export const PRIZES: WheelDataType[] = [
     style: { backgroundColor: '#F36526' },
   },
   {
-    option: 'merch2',
+    option: 'merch',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#1EED3E' },
   },
@@ -32,12 +32,12 @@ export const PRIZES: WheelDataType[] = [
     style: { backgroundColor: '#ED1E78' },
   },
   {
-    option: 'merch3',
+    option: 'merch',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#005C00 ' },
   },
   {
-    option: 'merch4',
+    option: 'merch',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#FFEC0C' },
   },
@@ -47,12 +47,12 @@ export const PRIZES: WheelDataType[] = [
     style: { backgroundColor: '#564B9E' },
   },
   {
-    option: 'merch5',
+    option: 'merch',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#FBB03C' },
   },
   {
-    option: 'merch6',
+    option: 'merch',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#7B2582' },
   },
