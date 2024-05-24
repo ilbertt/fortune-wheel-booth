@@ -283,6 +283,7 @@ shared ({ caller = initialController }) actor class Main() {
     #icp : Nat;
     #ckBtc : Nat;
     #ckEth : Nat;
+    #ckUsdc : Nat;
   };
 
   type ManualSendArgs = {
@@ -312,6 +313,9 @@ shared ({ caller = initialController }) actor class Main() {
       };
       case (#ckEth(amount)) {
         await transferCkEth(receiver, amount);
+      };
+      case (#ckUsdc(amount)) {
+        await transferCkUsdc(receiver, amount);
       };
     };
   };
