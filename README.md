@@ -19,11 +19,21 @@ dfx help
 dfx canister --help
 ```
 
+## Requirements
+
+- Node.js v20+
+- pnpm v9 (https://pnpm.io)
+- mops (https://mops.one)
+- dfx (https://internetcomputer.org/docs/current/developer-docs/getting-started/install/)
+
 ## Running the project locally
 
 If you want to test your project locally, you can use the following commands:
 
 ```bash
+# Install dependencies
+pnpm install
+
 # Starts the replica, running in the background
 dfx start --background
 
