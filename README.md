@@ -85,9 +85,9 @@ dfx canister call fortune-wheel-booth-backend getExtraction '(principal "<the-pr
 To manually send tokens to a principal, use the following command:
 
 ```bash
-dfx canister call fortune-wheel-booth-backend send '(
+dfx canister call fortune-wheel-booth-backend manualTransfer '(
   record {
-    tokens = variant { icp = 50_000_000 : nat }; # or ckBtc or ckEth
+    tokens = variant { icp = 50_000_000 : nat }; # or ckBtc or ckEth or ckUsdc
     receiver = principal "<the-principal-you-want-to-send-to>";
   },
 )'
@@ -106,6 +106,8 @@ dfx canister call fortune-wheel-booth-backend getAvailablePrizes
 ```
 
 > For ICP and ckBTC, the amount is specified in the format: 1 ICP = 10^8 token amount.
+>
+> For ckUSDC, the amount is specified in the format: 1 ckUSDC = 10^6 token amount.
 >
 > For ckETH, the amount is specified in the format: 1 ckETH = 10^18 token amount.
 
