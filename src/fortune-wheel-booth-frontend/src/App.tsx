@@ -38,7 +38,7 @@ export default function Home() {
 
   if (!adminPrincipal) {
     return (
-      <div className='flex justify-center items-center h-full w-full text-center text-white'>
+      <div className='flex h-full w-full items-center justify-center text-center text-white'>
         Loading...
       </div>
     );
@@ -47,25 +47,25 @@ export default function Home() {
   return (
     <>
       {isAnonymous && (
-        <div className='flex justify-center items-center h-full w-full flex-col gap-4'>
+        <div className='flex h-full w-full flex-col items-center justify-center gap-4'>
           <img
-            className='absolute top-10 left-0 right-0 m-auto h-32 z-20'
-            src={icpItChLogo}
+            className='absolute left-0 right-0 top-10 z-20 m-auto h-32'
+            src='/hub-logo-light.svg'
             alt='icpItCh logo'
           />
           {canisterErrorResponse && (
-            <p className='text-red-500 text-sm absolute top-1/4 left-0 right-0 m-auto text-center'>
+            <p className='absolute left-0 right-0 top-1/4 m-auto text-center text-sm text-red-500'>
               {canisterErrorResponse}
             </p>
           )}
           <button
-            className='bg-white rounded-xl shadow-sm w-44 text-center px-4 py-2'
+            className='w-44 rounded-xl bg-white px-4 py-2 text-center shadow-sm'
             onClick={handleLogin}
           >
             <p className='text-xl'>Admin</p>
           </button>
           <a
-            className='bg-white rounded-xl shadow-sm w-44 text-center px-4 py-2 text-xl'
+            className='w-44 rounded-xl bg-white px-4 py-2 text-center text-xl shadow-sm'
             href='/fortune-wheel/'
           >
             Fortune Wheel
@@ -78,24 +78,24 @@ export default function Home() {
             onResult={(text) => extractPrize(text)}
             onError={(error) => console.log('Error', error?.message)}
           />
-          <div className='w-full flex justify-center items-center pt-4'>
+          <div className='flex w-full items-center justify-center pt-4'>
             <button
-              className='bg-white rounded-xl shadow-sm w-24 p-1 px-0 mx-auto'
+              className='mx-auto w-24 rounded-xl bg-white p-1 px-0 shadow-sm'
               onClick={logout}
             >
               <p className='text-center text-base'>Logout</p>
             </button>
           </div>
-          <div className='absolute bottom-[15%] left-0 right-0 m-auto flex justify-center items-center flex-col gap-4'>
-            <p className='text-center text-white text-base px-16 gap-2 font-bold'>
+          <div className='absolute bottom-[15%] left-0 right-0 m-auto flex flex-col items-center justify-center gap-4'>
+            <p className='gap-2 px-16 text-center text-base font-bold text-white'>
               Admin Principal:
               <br />
-              <span className='font-normal text-xs'>
+              <span className='text-xs font-normal'>
                 {adminPrincipal.toText()}
               </span>
             </p>
             <button
-              className='bg-white rounded-xl shadow-sm w-32 p-1'
+              className='w-32 rounded-xl bg-white p-1 shadow-sm'
               onClick={() =>
                 navigator.clipboard.writeText(adminPrincipal.toText())
               }
@@ -106,7 +106,7 @@ export default function Home() {
         </>
       )}
       <img
-        className='absolute bottom-0 left-0 right-0 m-auto h-32 w-36 z-20'
+        className='absolute bottom-0 left-0 right-0 z-20 m-auto h-32 w-36'
         src={icpMainLogo}
         alt='icp main logo'
       />
