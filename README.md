@@ -74,23 +74,25 @@ dfx canister call fortune-wheel-booth-backend getLatestExtraction
 
 You are automatically set as an admin if you deploy the canister the first time.
 
+The following methods are available for admins.
+
+#### `extract`
+
 To run an extraction as an admin, use the following command:
 
 ```bash
 dfx canister call fortune-wheel-booth-backend extract '(principal "<the-principal-you-want-to-extract-for>")'
 ```
 
-To add an admin, use the following command:
-
-```bash
-dfx canister call fortune-wheel-booth-backend addAdmin '(principal "<the-principal-you-want-to-add-as-admin>")'
-```
+#### `getExtraction`
 
 To fetch the extraction for a principal, use the following command:
 
 ```bash
 dfx canister call fortune-wheel-booth-backend getExtraction '(principal "<the-principal-you-want-to-fetch-the-extraction-for>")'
 ```
+
+#### `manualTransfer`
 
 To manually send tokens to a principal, use the following command:
 
@@ -103,11 +105,33 @@ dfx canister call fortune-wheel-booth-backend manualTransfer '(
 )'
 ```
 
+You can use this method if you need to remove the tokens from the canister and send them back to your address.
+
+#### `addAdmin`
+
+To add an admin, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend addAdmin '(principal "<the-principal-you-want-to-add-as-admin>")'
+```
+
+#### `removeAdmin`
+
+To remove an admin, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend removeAdmin '(principal "<the-principal-you-want-to-remove-as-admin>")'
+```
+
+#### `getAdmins`
+
 To fetch the list of admins, use the following command:
 
 ```bash
 dfx canister call fortune-wheel-booth-backend getAdmins
 ```
+
+#### `getAvailablePrizes`
 
 To fetch the available prizes, use the following command:
 
@@ -120,6 +144,22 @@ dfx canister call fortune-wheel-booth-backend getAvailablePrizes
 > For ckUSDC, the amount is specified in the format: 1 ckUSDC = 10^6 token amount.
 >
 > For ckETH, the amount is specified in the format: 1 ckETH = 10^18 token amount.
+
+#### `setAvailablePrizes`
+
+To set the available prizes, use the following command (values as example):
+
+```bash
+dfx canister call fortune-wheel-booth-backend setAvailablePrizes '(
+  vec {
+    record { variant { icp = 8_200_000 : nat }; opt (8 : nat8) };
+    record { variant { ckBtc = 1_500 : nat }; opt (4 : nat8) };
+    record { variant { merch }; null };
+  },
+)'
+```
+
+We suggest to first fetch the available prizes with the [`getAvailablePrizes`](#getavailableprizes) method and use that result to create the new available prizes array.
 
 ### Note on frontend environment variables
 
