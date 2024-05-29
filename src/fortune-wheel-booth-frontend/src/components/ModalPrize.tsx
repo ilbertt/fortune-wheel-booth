@@ -39,9 +39,9 @@ export default function ModalPrize({
         <p className='text-[6vw] font-bold uppercase text-white'>You won!</p>
         <div className='prize-container-animation'>
           <img
-            src={wonPrize.image?.uri}
+            src={wonPrize.modalImageUri || wonPrize.image?.uri}
             alt='prize'
-            className='prize-animation h-30'
+            className='h-30'
           />
         </div>
         <p className='prize-value-animation rounded-2xl bg-dfinity-gradient-dark p-2 px-4 text-[3vw] font-bold uppercase text-white'>
