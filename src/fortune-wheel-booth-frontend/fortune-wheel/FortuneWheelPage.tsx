@@ -15,6 +15,9 @@ import {
 
 const ACTOR = createActor(canisterId);
 
+const PRIZE_MODAL_DURATION_MILLIS = 30_000;
+const FETCH_EXTRACTION_INTERVAL_MILLIS = 2_000;
+
 function FortuneWheelPage() {
   const [showModalPrize, setShowModalPrize] = useState(false);
   const [lastExtraction, setLastExtraction] =
@@ -22,20 +25,14 @@ function FortuneWheelPage() {
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState<number>(0);
 
-  useEffect(() => {
-    if (showModalPrize)
-      setTimeout(() => {
-        setShowModalPrize(false);
-        setMustSpin(false);
-      }, 8000);
-  }, [showModalPrize]);
+  const onStopSpinning = useCallback(() => {
+    setShowModalPrize(true);
 
-  useEffect(() => {
-    const extractPrizeInterval = setInterval(extractPrize, 2000);
-    return () => {
-      clearInterval(extractPrizeInterval);
-    };
-  }, [mustSpin, lastExtraction]);
+    setTimeout(() => {
+      setShowModalPrize(false);
+      setMustSpin(false);
+    }, PRIZE_MODAL_DURATION_MILLIS);
+  }, []);
 
   const extractPrize = useCallback(async () => {
     const newExtraction = await ACTOR.getLastExtraction();
@@ -58,6 +55,13 @@ function FortuneWheelPage() {
     }
   }, [mustSpin, lastExtraction]);
 
+  useEffect(() => {
+    const extractPrizeInterval = setInterval(extractPrize, FETCH_EXTRACTION_INTERVAL_MILLIS);
+    return () => {
+      clearInterval(extractPrizeInterval);
+    };
+  }, [extractPrize]);
+
   return (
     <main className='flex justify-center items-center flex-col relative h-full'>
       <div className='flex justify-center items-center absolute top-10 left-5 h-[3vw]'>
@@ -67,7 +71,7 @@ function FortuneWheelPage() {
         <img className='h-full' src='/qrcode-oisy.png' alt='Oisy.com qr code' />
       </div>
       <FortuneWheel
-        setShowModalPrize={setShowModalPrize}
+        onStopSpinning={onStopSpinning}
         prizeNumber={prizeNumber}
         mustSpin={mustSpin}
       />

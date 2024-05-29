@@ -5,13 +5,13 @@ import Pointer from '../assets/images/pointer.png';
 import { Dispatch, SetStateAction } from 'react';
 
 interface FortuneWheelProps {
-  setShowModalPrize: Dispatch<SetStateAction<boolean>>;
+  onStopSpinning: () => void;
   prizeNumber: number;
   mustSpin: boolean;
 }
 
 export default function FortuneWheel({
-  setShowModalPrize,
+  onStopSpinning,
   prizeNumber,
   mustSpin,
 }: FortuneWheelProps) {
@@ -21,9 +21,7 @@ export default function FortuneWheel({
         mustStartSpinning={mustSpin}
         prizeNumber={prizeNumber}
         data={PRIZES}
-        onStopSpinning={() => {
-          setShowModalPrize(true);
-        }}
+        onStopSpinning={onStopSpinning}
         outerBorderWidth={0}
         pointerProps={{
           src: Pointer,
