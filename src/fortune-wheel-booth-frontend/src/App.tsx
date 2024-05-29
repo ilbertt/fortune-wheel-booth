@@ -11,11 +11,13 @@ import useIcState from './hooks/useIcState';
 export default function Home() {
   const { isAnonymous, logout, handleLogin, adminActor, adminPrincipal } =
     useIcState();
-  const [canisterErrorResponse, setCanisterErrorResponse] = useState<string>();
+  const [error, setError] = useState<string | undefined>();
   const [debouncePrizeExtraction, setDebouncePrizeExtraction] =
     useState<boolean>(false);
   const [isExtracting, setIsExtracting] = useState<boolean>(false);
-  const [extractionResult, setExtractionResult] = useState<Extraction>();
+  const [extractionResult, setExtractionResult] = useState<
+    Extraction | undefined
+  >();
 
   useEffect(() => {
     setInterval(() => {
@@ -24,7 +26,7 @@ export default function Home() {
   }, [debouncePrizeExtraction]);
 
   const extractPrize = async (text: string) => {
-    setCanisterErrorResponse(undefined);
+    setError(undefined);
     if (debouncePrizeExtraction) return;
     setIsExtracting(true);
     setDebouncePrizeExtraction(true);
@@ -33,12 +35,16 @@ export default function Home() {
     if (adminActor) {
       try {
         const extraction = await adminActor.extract(userPrincipal);
-        console.log(extraction);
+        console.log('Extraction result:', extraction);
         setExtractionResult(extraction);
-      } catch (error: any) {
-        console.error(error);
-        const errorMsg = error.message || 'Failed to extract: Unknown error';
-        setCanisterErrorResponse(errorMsg);
+
+        setTimeout(() => {
+          setExtractionResult(undefined);
+        }, 10_000);
+      } catch (err: any) {
+        console.error(err);
+        const errorMsg = err.message || 'Failed to extract: Unknown error';
+        setError(errorMsg);
         if (errorMsg.includes('Only admins can extract')) {
           logout();
         }
@@ -56,7 +62,7 @@ export default function Home() {
   }
 
   return (
-    <>
+    <div className='flex h-full w-full flex-col items-center justify-center gap-4'>
       {isAnonymous && (
         <div className='flex h-full w-full flex-col items-center justify-center gap-4'>
           <img
@@ -64,11 +70,7 @@ export default function Home() {
             src='/hub-logo-light.svg'
             alt='icpItCh logo'
           />
-          {canisterErrorResponse && (
-            <p className='absolute left-0 right-0 top-1/4 m-auto text-center text-sm text-red-500'>
-              {canisterErrorResponse}
-            </p>
-          )}
+          {error && <p className='text-center text-sm text-red-500'>{error}</p>}
           <button
             className='w-44 rounded-xl bg-white px-4 py-2 text-center shadow-sm'
             onClick={handleLogin}
@@ -84,27 +86,25 @@ export default function Home() {
         </div>
       )}
       {!isAnonymous && (
-        <>
+        <div className='flex h-full w-full flex-col items-center justify-center gap-4'>
           <Scanner
             onResult={(text) => extractPrize(text)}
-            onError={(error) => console.log('Error', error?.message)}
+            onError={(err) => setError('Scan error: ' + err)}
           />
           {isExtracting && (
-            <p className='absolute left-0 right-0 top-1/4 m-auto text-center text-3xl text-white'>
-              Extracting...
-            </p>
+            <p className='text-center text-3xl text-white'>Extracting...</p>
           )}
           {Boolean(extractionResult) && (
-            <p className='absolute left-0 right-0 top-1/4 m-auto text-center text-3xl text-green-500'>
+            <p className='text-center text-3xl text-green-500'>
               EXTRACTION SUCCESS!
             </p>
           )}
-          {canisterErrorResponse && (
-            <p className='absolute left-0 right-0 top-1/4 m-auto text-center text-sm text-red-500'>
-              EXTRACTION ERROR: {canisterErrorResponse}
+          {error && (
+            <p className='text-center text-sm text-red-500'>
+              EXTRACTION ERROR: {error}
             </p>
           )}
-          <div className='absolute bottom-[15%] left-0 right-0 m-auto flex flex-col items-center justify-center gap-4'>
+          <div className='flex flex-col items-center justify-center gap-4'>
             <p className='gap-2 px-16 text-center text-base font-bold text-white'>
               Admin Principal:
               <br />
@@ -129,13 +129,9 @@ export default function Home() {
               <p className='text-center text-base'>Logout</p>
             </button>
           </div>
-        </>
+        </div>
       )}
-      <img
-        className='absolute bottom-0 left-0 right-0 z-20 m-auto h-32 w-36'
-        src={icpMainLogo}
-        alt='icp main logo'
-      />
-    </>
+      <img className='z-20 h-32 w-36' src={icpMainLogo} alt='icp main logo' />
+    </div>
   );
 }
