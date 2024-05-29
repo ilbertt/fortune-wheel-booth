@@ -92,6 +92,14 @@ To fetch the extraction for a principal, use the following command:
 dfx canister call fortune-wheel-booth-backend getExtraction '(principal "<the-principal-you-want-to-fetch-the-extraction-for>")'
 ```
 
+#### `getExtractions`
+
+To fetch all extractions, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend getExtractions
+```
+
 #### `manualTransfer`
 
 To manually send tokens to a principal, use the following command:

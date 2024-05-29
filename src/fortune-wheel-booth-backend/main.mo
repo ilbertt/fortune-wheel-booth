@@ -297,6 +297,14 @@ shared ({ caller = initialController }) actor class Main() {
     sorted_entries.next();
   };
 
+  public shared query ({ caller }) func getExtractions() : async [(Principal, Extraction)] {
+    if (not isAdmin(caller)) {
+      throw Error.reject("Only admins can read extractions");
+    };
+
+    Iter.toArray(extractedPrincipals.entries());
+  };
+
   type ManualSendTokens = {
     #icp : Nat;
     #ckBtc : Nat;
