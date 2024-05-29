@@ -22,7 +22,9 @@ shared ({ caller = initialController }) actor class Main() {
     #ckBtc : Nat;
     #ckEth : Nat;
     #ckUsdc : Nat;
-    #merch;
+    #jackpot;
+    #merchTshirt;
+    #merchPen;
   };
 
   type Extraction = {
@@ -42,13 +44,13 @@ shared ({ caller = initialController }) actor class Main() {
     (#ckEth(260_000_000_000_000), ?10), // 0.00026 ckETH ~ $1
     // ckUSDC has 6 decimals: 1_000_000
     (#ckUsdc(1_000_000), ?10), // 1 ckUSDC ~ $1
+    (#jackpot, ?20),
     // increase the probability of getting the merch prize by repeating it
-    (#merch, null),
-    (#merch, null),
-    (#merch, null),
-    (#merch, null),
-    (#merch, null),
-    (#merch, null),
+    (#merchTshirt, ?12),
+    (#merchTshirt, ?12),
+    (#merchTshirt, ?12),
+    (#merchPen, ?18),
+    (#merchPen, ?18),
   ];
   var prizes : Buffer.Buffer<(Prize, ?Nat8)> = Buffer.fromArray(prizesEntries);
 
