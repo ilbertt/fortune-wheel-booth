@@ -44,7 +44,7 @@ export default function ModalPrize({
             className='h-30'
           />
         </div>
-        <p className='prize-value-animation rounded-2xl bg-dfinity-gradient-dark p-2 px-4 text-[3vw] font-bold uppercase text-white'>
+        <p className='prize-value-animation rounded-2xl bg-dfinity-gradient-dark p-2 px-4 text-[3vw] font-bold text-white'>
           {wonPrizeValue}
         </p>
       </div>
