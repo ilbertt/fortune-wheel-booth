@@ -11,7 +11,7 @@ const getMerchPrizesIndexes = () => {
   return merchPrizes;
 };
 
-export const findPrize = (option: string) => {
+export const findPrizeIndex = (option: string): number => {
   if (option === 'merch') {
     const merchPrizesIndexes: number[] = getMerchPrizesIndexes();
     return merchPrizesIndexes[

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import FortuneWheel from '../src/components/FortuneWheel';
 import ModalPrize from '../src/components/ModalPrize';
-import { findPrize } from '../src/utils/findPrize';
+import { findPrizeIndex } from '../src/utils/findPrize';
 import { Principal } from '@dfinity/principal';
 import {
   _SERVICE,
@@ -38,7 +38,7 @@ function FortuneWheelPage() {
   }, [mustSpin, lastExtraction]);
 
   const extractPrize = useCallback(async () => {
-    const newExtraction = await ACTOR?.getLastExtraction();
+    const newExtraction = await ACTOR.getLastExtraction();
     if (
       !mustSpin &&
       newExtraction &&
@@ -53,7 +53,7 @@ function FortuneWheelPage() {
       ) {
         setMustSpin(true);
         setLastExtraction(newExtraction[0]);
-        setPrizeNumber(findPrize(Object.keys(newExtraction[0][1].prize)[0]));
+        setPrizeNumber(findPrizeIndex(Object.keys(newExtraction[0][1].prize)[0]));
       }
     }
   }, [mustSpin, lastExtraction]);
@@ -62,6 +62,9 @@ function FortuneWheelPage() {
     <main className='flex justify-center items-center flex-col relative h-full'>
       <div className='flex justify-center items-center absolute top-10 left-5 h-[3vw]'>
         <img className='h-full' src='/hub-logo-light.svg' alt='hub logo logo' />
+      </div>
+      <div className='flex justify-center items-center absolute top-10 right-5 h-64'>
+        <img className='h-full' src='/qrcode-oisy.png' alt='Oisy.com qr code' />
       </div>
       <FortuneWheel
         setShowModalPrize={setShowModalPrize}

@@ -1,6 +1,9 @@
 import { Scanner } from '@yudiel/react-qr-scanner';
 import { useEffect, useState } from 'react';
-import { _SERVICE } from 'declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did';
+import {
+  Extraction,
+  _SERVICE,
+} from 'declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did';
 import { Principal } from '@dfinity/principal';
 import icpMainLogo from './assets/icp-main-logo.svg';
 import useIcState from './hooks/useIcState';
@@ -9,30 +12,39 @@ export default function Home() {
   const { isAnonymous, logout, handleLogin, adminActor, adminPrincipal } =
     useIcState();
   const [canisterErrorResponse, setCanisterErrorResponse] = useState<string>();
-  const [prizeExtracted, setPrizeExtracted] = useState<boolean>(false);
+  const [debouncePrizeExtraction, setDebouncePrizeExtraction] =
+    useState<boolean>(false);
+  const [isExtracting, setIsExtracting] = useState<boolean>(false);
+  const [extractionResult, setExtractionResult] = useState<Extraction>();
 
   useEffect(() => {
     setInterval(() => {
-      if (prizeExtracted) setPrizeExtracted(false);
+      if (debouncePrizeExtraction) setDebouncePrizeExtraction(false);
     }, 10000);
-  }, [prizeExtracted]);
+  }, [debouncePrizeExtraction]);
 
   const extractPrize = async (text: string) => {
-    if (prizeExtracted) return;
-    setPrizeExtracted(true);
+    setCanisterErrorResponse(undefined);
+    if (debouncePrizeExtraction) return;
+    setIsExtracting(true);
+    setDebouncePrizeExtraction(true);
+    setExtractionResult(undefined);
     const userPrincipal: Principal = Principal.fromText(text);
     if (adminActor) {
       try {
         const extraction = await adminActor.extract(userPrincipal);
         console.log(extraction);
+        setExtractionResult(extraction);
       } catch (error: any) {
-        console.log(error);
-        if (error.message.includes('Only admins can extract')) {
+        console.error(error);
+        const errorMsg = error.message || 'Failed to extract: Unknown error';
+        setCanisterErrorResponse(errorMsg);
+        if (errorMsg.includes('Only admins can extract')) {
           logout();
-          setCanisterErrorResponse('Only admins can extract');
         }
       }
     }
+    setIsExtracting(false);
   };
 
   if (!adminPrincipal) {
@@ -77,14 +89,21 @@ export default function Home() {
             onResult={(text) => extractPrize(text)}
             onError={(error) => console.log('Error', error?.message)}
           />
-          <div className='flex w-full items-center justify-center pt-4'>
-            <button
-              className='mx-auto w-24 rounded-xl bg-white p-1 px-0 shadow-sm'
-              onClick={logout}
-            >
-              <p className='text-center text-base'>Logout</p>
-            </button>
-          </div>
+          {isExtracting && (
+            <p className='absolute left-0 right-0 top-1/4 m-auto text-center text-3xl text-white'>
+              Extracting...
+            </p>
+          )}
+          {Boolean(extractionResult) && (
+            <p className='absolute left-0 right-0 top-1/4 m-auto text-center text-3xl text-green-500'>
+              EXTRACTION SUCCESS!
+            </p>
+          )}
+          {canisterErrorResponse && (
+            <p className='absolute left-0 right-0 top-1/4 m-auto text-center text-sm text-red-500'>
+              EXTRACTION ERROR: {canisterErrorResponse}
+            </p>
+          )}
           <div className='absolute bottom-[15%] left-0 right-0 m-auto flex flex-col items-center justify-center gap-4'>
             <p className='gap-2 px-16 text-center text-base font-bold text-white'>
               Admin Principal:
@@ -100,6 +119,14 @@ export default function Home() {
               }
             >
               <p className='text-center text-sm'>Copy Principal</p>
+            </button>
+          </div>
+          <div className='flex w-full items-center justify-center pt-4'>
+            <button
+              className='mx-auto w-24 rounded-xl bg-white p-1 px-0 shadow-sm'
+              onClick={logout}
+            >
+              <p className='text-center text-base'>Logout</p>
             </button>
           </div>
         </>

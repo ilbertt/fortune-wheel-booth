@@ -16,7 +16,7 @@ export default function FortuneWheel({
   mustSpin,
 }: FortuneWheelProps) {
   return (
-    <div className='wheel-container relative'>
+    <div className='wheel-container relative scale-125'>
       <Wheel
         mustStartSpinning={mustSpin}
         prizeNumber={prizeNumber}
