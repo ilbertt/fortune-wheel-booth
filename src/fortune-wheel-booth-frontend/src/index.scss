@@ -3,19 +3,19 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "Circular";
-  src: url("./assets/fonts/CircularStd-Medium.ttf");
+  font-family: 'Circular';
+  src: url('./assets/fonts/CircularStd-Medium.ttf');
 }
 
 @font-face {
-  font-family: "Circular";
-  src: url("./assets/fonts/CircularStd-Bold.ttf");
+  font-family: 'Circular';
+  src: url('./assets/fonts/CircularStd-Bold.ttf');
   font-weight: 600;
 }
 
 @font-face {
-  font-family: "Circular";
-  src: url("./assets/fonts/CircularStd-Black.ttf");
+  font-family: 'Circular';
+  src: url('./assets/fonts/CircularStd-Black.ttf');
   font-weight: 900;
 }
 
@@ -31,12 +31,14 @@ body,
 body {
   font-family: Circular, sans-serif;
   font-size: 1.5rem;
-  background-image: linear-gradient(to right bottom,
-      #0e031f,
-      #140a29,
-      #190f33,
-      #20123d,
-      #281447);
+  background-image: linear-gradient(
+    to right bottom,
+    #0e031f,
+    #140a29,
+    #190f33,
+    #20123d,
+    #281447
+  );
 }
 
 img {
@@ -80,7 +82,7 @@ canvas {
   filter: drop-shadow(0 0 0.75rem #040404);
 }
 
-.wheel-container>div {
+.wheel-container > div {
   max-width: 1800px !important;
   max-height: 1800px !important;
   width: 40vw !important;
