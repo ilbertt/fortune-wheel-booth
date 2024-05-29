@@ -1,7 +1,6 @@
 import Time "mo:base/Time";
 import Principal "mo:base/Principal";
 import Iter "mo:base/Iter";
-import List "mo:base/List";
 import TrieMap "mo:base/TrieMap";
 import Error "mo:base/Error";
 import Option "mo:base/Option";
@@ -9,6 +8,7 @@ import Random "mo:base/Random";
 import Nat "mo:base/Nat";
 import Order "mo:base/Order";
 import Buffer "mo:base/Buffer";
+import TrieSet "mo:base/TrieSet";
 import Fuzz "mo:fuzz";
 
 import IcpLedger "canister:icp_ledger";
@@ -50,9 +50,9 @@ shared ({ caller = initialController }) actor class Main() {
     (#merch, null),
     (#merch, null),
   ];
-  let prizes : Buffer.Buffer<(Prize, ?Nat8)> = Buffer.fromArray(prizesEntries);
+  var prizes : Buffer.Buffer<(Prize, ?Nat8)> = Buffer.fromArray(prizesEntries);
 
-  private stable var adminPrincipals : List.List<Principal> = ?(initialController, null);
+  private stable var adminPrincipals = TrieSet.fromArray<Principal>([initialController], Principal.hash, Principal.equal);
 
   private stable var extractedPrincipalsEntries : [(Principal, Extraction)] = [];
   private let extractedPrincipals = TrieMap.fromEntries<Principal, Extraction>(extractedPrincipalsEntries.vals(), Principal.equal, Principal.hash);
@@ -69,15 +69,31 @@ shared ({ caller = initialController }) actor class Main() {
   };
 
   private func isAdmin(principal : Principal) : Bool {
-    List.some<Principal>(adminPrincipals, func p { p == principal });
+    TrieSet.contains(adminPrincipals, principal, Principal.hash(principal), Principal.equal);
   };
 
-  public func addAdmin(principal : Principal) {
+  public shared ({ caller }) func addAdmin(principal : Principal) {
+    if (not isAdmin(caller)) {
+      throw Error.reject("Only admins can add admins");
+    };
+
     if (isAdmin(principal)) {
       throw Error.reject("Admin already exists");
     };
 
-    adminPrincipals := List.push(principal, adminPrincipals);
+    adminPrincipals := TrieSet.put<Principal>(adminPrincipals, principal, Principal.hash(principal), Principal.equal);
+  };
+
+  public shared ({ caller }) func removeAdmin(principal : Principal) {
+    if (not isAdmin(caller)) {
+      throw Error.reject("Only admins can remove admins");
+    };
+
+    if (not isAdmin(principal)) {
+      throw Error.reject("Admin does not exist");
+    };
+
+    adminPrincipals := TrieSet.delete<Principal>(adminPrincipals, principal, Principal.hash(principal), Principal.equal);
   };
 
   private func isPrincipalExtracted(principal : Principal) : Bool {
@@ -325,7 +341,7 @@ shared ({ caller = initialController }) actor class Main() {
       throw Error.reject("Only admins can read admins");
     };
 
-    List.toArray(adminPrincipals);
+    TrieSet.toArray(adminPrincipals);
   };
 
   public shared query ({ caller }) func getAvailablePrizes() : async [(Prize, ?Nat8)] {
@@ -334,5 +350,13 @@ shared ({ caller = initialController }) actor class Main() {
     };
 
     Buffer.toArray(prizes);
+  };
+
+  public shared ({ caller }) func setAvailablePrizes(newPrizes : [(Prize, ?Nat8)]) {
+    if (not isAdmin(caller)) {
+      throw Error.reject("Only admins can set prizes");
+    };
+
+    prizes := Buffer.fromArray(newPrizes);
   };
 };
