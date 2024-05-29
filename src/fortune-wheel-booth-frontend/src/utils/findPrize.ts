@@ -1,8 +1,8 @@
 import { PRIZES } from '../costants';
 
-const getMerchPrizesIndexes = () => {
+const getMerchPrizesIndexes = (option: string) => {
   const merchPrizes: number[] = PRIZES.reduce((acc: number[], prize, index) => {
-    if (prize?.option?.includes('merch')) {
+    if (prize?.option === option) {
       acc.push(index);
     }
     return acc;
@@ -12,8 +12,8 @@ const getMerchPrizesIndexes = () => {
 };
 
 export const findPrizeIndex = (option: string): number => {
-  if (option === 'merch') {
-    const merchPrizesIndexes: number[] = getMerchPrizesIndexes();
+  if (option.includes('merch')) {
+    const merchPrizesIndexes: number[] = getMerchPrizesIndexes(option);
     return merchPrizesIndexes[
       Math.floor(Math.random() * merchPrizesIndexes.length)
     ];
