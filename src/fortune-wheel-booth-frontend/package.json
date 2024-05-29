@@ -9,6 +9,7 @@
     "prebuild": "dfx generate",
     "build": "tsc && vite build",
     "format": "prettier --write \"src/**/*.{json,js,jsx,ts,tsx,css,scss}\"",
+    "format:check": "prettier --check \"src/**/*.{json,js,jsx,ts,tsx,css,scss}\"",
     "prepare": "husky"
   },
   "dependencies": {
