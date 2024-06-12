@@ -5,7 +5,7 @@ import ckUsdc from './assets/images/ckusdc.svg';
 import IcpLogoLight from './assets/images/icp-logo-light.png';
 import jackpot from './assets/images/jackpot.svg';
 import jackpotModal from './assets/images/jackpot-modal.png';
-import merchTshirt from './assets/images/merch-tshirt.png';
+import nftFestLogo from './assets/images/nft-fest-logo.png';
 import { WheelDataType } from 'react-custom-roulette';
 
 type CustomWheelDataType = WheelDataType & {
@@ -15,68 +15,56 @@ type CustomWheelDataType = WheelDataType & {
 
 export const PRIZES: CustomWheelDataType[] = [
   {
-    option: 'ckEth',
-    image: { uri: ckEth, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#29ABE2' },
-  },
-  {
-    option: 'merch.Tshirt',
-    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#522785' },
-    modalImageUri: merchTshirt,
-  },
-  {
-    option: 'ckUsdc',
-    image: { uri: ckUsdc, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#ED1E79' },
-  },
-  {
-    option: 'merch.Pen',
-    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#F15A24' },
-  },
-  {
-    option: 'icp',
-    image: { uri: IcpLogoLight, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#FBB03B' },
-  },
-  {
-    option: 'merch.Tshirt',
+    option: 'merch.Hat',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#29ABE2' },
-    modalImageUri: merchTshirt,
+    modalImageUri: nftFestLogo,
   },
   {
     option: 'ckBtc',
     image: { uri: ckBtc, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#522785' },
+    style: { backgroundColor: '#FBB03B' },
   },
   {
     option: 'merch.Tshirt',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#ED1E79' },
-    modalImageUri: merchTshirt,
+    modalImageUri: nftFestLogo,
   },
   {
-    option: 'special.jackpot',
-    image: { uri: jackpot, sizeMultiplier: 1.3, offsetY: 140 },
-    style: { backgroundColor: '#F15A24' },
-    modalImageUri: jackpotModal,
-  },
-  {
-    option: 'noPrize',
+    option: 'merch.Ticket',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
+    style: { backgroundColor: '#F15A24' },
+    modalImageUri: nftFestLogo,
+  },
+  {
+    option: 'merch.Hat',
+    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
+    style: { backgroundColor: '#29ABE2' },
+    modalImageUri: nftFestLogo,
+  },
+  {
+    option: 'ckBtc',
+    image: { uri: ckBtc, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#FBB03B' },
+  },
+  {
+    option: 'merch.Tshirt',
+    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
+    style: { backgroundColor: '#ED1E79' },
+    modalImageUri: nftFestLogo,
+  },
+  {
+    option: 'merch.Ticket',
+    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
+    style: { backgroundColor: '#F15A24' },
+    modalImageUri: nftFestLogo,
   },
 ];
 
 export const PRIZES_VALUES_MAPPING: Record<string, string> = {
-  ckEth: '$1 in ckETH',
-  icp: '$1 in ICP',
   ckBtc: '$1 in ckBTC',
-  ckUsdc: '1 ckUSDC',
-  'merch.Tshirt': 'ICP T-shirt',
-  'merch.Pen': 'ICP Pen',
-  'special.jackpot': 'JACKPOT',
-  noPrize: 'NO PRIZE',
+  'merch.Tshirt': 'NFT fest T-shirt',
+  'merch.Hat': 'NFT fest Hat',
+  'merch.Ticket': 'NFT fest Ticket',
 };

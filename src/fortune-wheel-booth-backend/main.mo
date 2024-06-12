@@ -39,22 +39,16 @@ shared ({ caller = initialController }) actor class Main() {
   private stable var prizesEntries : [(Prize, ?Nat8)] = [
     // -- tokens --
     // ICP and ckBTC have 8 decimals: 100_000_000
-    (#icp(8_200_000), ?10), // 0.082 ICP ~ $1
-    (#ckBtc(1_500), ?10), // 0.000015 ckBTC ~ $1
-    // ckETH has 18 decimals: 1_000_000_000_000_000_000
-    (#ckEth(260_000_000_000_000), ?10), // 0.00026 ckETH ~ $1
-    // ckUSDC has 6 decimals: 1_000_000
-    (#ckUsdc(1_000_000), ?10), // 1 ckUSDC ~ $1
+    (#ckBtc(1_500), ?5), // 0.000015 ckBTC ~ $1
+    (#ckBtc(1_500), ?5), // 0.000015 ckBTC ~ $1
     // -- merch --
     // increase the probability of getting the merch prize by repeating it
-    (#merch("Tshirt"), ?12),
-    (#merch("Tshirt"), ?12),
-    (#merch("Tshirt"), ?12),
-    (#merch("Pen"), ?18),
-    (#merch("Pen"), ?18),
-    // -- special --
-    (#special("jackpot"), ?20),
-    (#noPrize, null), // unlimited
+    (#merch("Tshirt"), ?4),
+    (#merch("Tshirt"), ?4),
+    (#merch("Hat"), ?2),
+    (#merch("Hat"), ?2),
+    (#merch("Ticket"), ?10),
+    (#merch("Ticket"), ?10),
   ];
   var prizes : Buffer.Buffer<(Prize, ?Nat8)> = Buffer.fromArray(prizesEntries);
 
