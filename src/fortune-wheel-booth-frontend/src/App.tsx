@@ -31,9 +31,9 @@ export default function Home() {
     setIsExtracting(true);
     setDebouncePrizeExtraction(true);
     setExtractionResult(undefined);
-    const userPrincipal: Principal = Principal.fromText(text);
     if (adminActor) {
       try {
+        const userPrincipal: Principal = Principal.fromText(text);
         const extraction = await adminActor.extract(userPrincipal);
         console.log('Extraction result:', extraction);
         setExtractionResult(extraction);
