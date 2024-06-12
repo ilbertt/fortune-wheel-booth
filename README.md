@@ -172,6 +172,17 @@ dfx canister call fortune-wheel-booth-backend setAvailablePrizes '(
 
 We suggest to first fetch the available prizes with the [`getAvailablePrizes`](#getavailableprizes) method and use that result to create the new available prizes array.
 
+### Scripts
+
+#### Fetch backend canister balances
+
+To fetch the balances of the backend canister in the ledgers, use the following command:
+
+```bash
+# use --network local to fetch balances on local network (default if not specified)
+./scripts/backend-canister-balances.sh --network ic
+```
+
 ### Note on frontend environment variables
 
 If you are hosting frontend code somewhere without using DFX, you may need to make one of the following adjustments to ensure your project does not fetch the root key in production:
