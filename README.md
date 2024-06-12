@@ -162,7 +162,10 @@ dfx canister call fortune-wheel-booth-backend setAvailablePrizes '(
   vec {
     record { variant { icp = 8_200_000 : nat }; opt (8 : nat8) };
     record { variant { ckBtc = 1_500 : nat }; opt (4 : nat8) };
-    record { variant { merch }; null };
+    record { variant { merch = "Tshirt" }; ?5 };
+    record { variant { merch = "Pen" }; ?10 };
+    record { variant { special = "jackpot" }; ?1 };
+    record { variant { noPrize }; null };
   },
 )'
 ```
