@@ -2,7 +2,6 @@ import { Wheel } from 'react-custom-roulette';
 import { PRIZES } from '../costants';
 import IcpLogo from '../assets/images/icp-logo-dark.png';
 import Pointer from '../assets/images/pointer.png';
-import { Dispatch, SetStateAction } from 'react';
 
 interface FortuneWheelProps {
   onStopSpinning: () => void;

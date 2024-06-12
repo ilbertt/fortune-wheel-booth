@@ -23,7 +23,7 @@ function FortuneWheelPage() {
   const [lastExtraction, setLastExtraction] =
     useState<[Principal, Extraction]>();
   const [mustSpin, setMustSpin] = useState(false);
-  const [prizeNumber, setPrizeNumber] = useState<number>(0);
+  const [prizeNumber, setPrizeNumber] = useState<number>(-1);
 
   const onStopSpinning = useCallback(() => {
     setShowModalPrize(true);
@@ -31,6 +31,7 @@ function FortuneWheelPage() {
     setTimeout(() => {
       setShowModalPrize(false);
       setMustSpin(false);
+      setPrizeNumber(-1);
     }, PRIZE_MODAL_DURATION_MILLIS);
   }, []);
 
@@ -48,9 +49,9 @@ function FortuneWheelPage() {
         (lastExtraction &&
           'eq' !== lastExtractedPrincipal.compareTo(lastExtraction[0]))
       ) {
+        setPrizeNumber(findPrizeIndex(newExtraction[0][1].prize));
         setMustSpin(true);
         setLastExtraction(newExtraction[0]);
-        setPrizeNumber(findPrizeIndex(newExtraction[0][1].prize));
       }
     }
   }, [mustSpin, lastExtraction]);
@@ -73,7 +74,7 @@ function FortuneWheelPage() {
       <FortuneWheel
         onStopSpinning={onStopSpinning}
         prizeNumber={prizeNumber}
-        mustSpin={mustSpin}
+        mustSpin={mustSpin && prizeNumber > -1}
       />
       {showModalPrize && (
         <ModalPrize
