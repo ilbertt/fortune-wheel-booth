@@ -50,7 +50,7 @@ function FortuneWheelPage() {
       ) {
         setMustSpin(true);
         setLastExtraction(newExtraction[0]);
-        setPrizeNumber(findPrizeIndex(Object.keys(newExtraction[0][1].prize)[0]));
+        setPrizeNumber(findPrizeIndex(newExtraction[0][1].prize));
       }
     }
   }, [mustSpin, lastExtraction]);

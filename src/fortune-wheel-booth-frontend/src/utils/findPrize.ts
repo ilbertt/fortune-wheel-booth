@@ -1,22 +1,38 @@
+import { type Prize } from 'declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did';
 import { PRIZES } from '../costants';
 
-const getMerchPrizesIndexes = (option: string) => {
-  const merchPrizes: number[] = PRIZES.reduce((acc: number[], prize, index) => {
+const prizesIndexesForOption = (option: string) => {
+  const indexes: number[] = PRIZES.reduce((acc: number[], prize, index) => {
     if (prize?.option === option) {
       acc.push(index);
     }
     return acc;
   }, []);
 
-  return merchPrizes;
+  return indexes;
 };
 
-export const findPrizeIndex = (option: string): number => {
-  if (option.includes('merch')) {
-    const merchPrizesIndexes: number[] = getMerchPrizesIndexes(option);
-    return merchPrizesIndexes[
-      Math.floor(Math.random() * merchPrizesIndexes.length)
-    ];
+export const getPrizeWheelOption = (prize: Prize): string => {
+  let option = Object.keys(prize)[0];
+  if ('merch' in prize || 'special' in prize) {
+    const subOption = Object.entries(prize)[0][1];
+    if (subOption) {
+      option = `${option}.${subOption}`;
+    }
   }
-  return PRIZES.findIndex((prize) => prize.option === option); // Returns the index of the first element in the array where predicate is true, and -1 otherwise.
+  return option;
+};
+
+export const findPrizeIndex = (prize: Prize): number => {
+  const option = getPrizeWheelOption(prize);
+
+  const prizesIndexes: number[] = prizesIndexesForOption(option);
+  if (prizesIndexes.length === 0) {
+    return -1;
+  }
+  if (prizesIndexes.length === 1) {
+    return prizesIndexes[0];
+  }
+
+  return prizesIndexes[Math.floor(Math.random() * prizesIndexes.length)];
 };

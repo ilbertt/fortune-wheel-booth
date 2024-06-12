@@ -9,6 +9,7 @@ import merchTshirt from './assets/images/merch-tshirt.png';
 import { WheelDataType } from 'react-custom-roulette';
 
 type CustomWheelDataType = WheelDataType & {
+  option: string;
   modalImageUri?: string;
 };
 
@@ -19,7 +20,7 @@ export const PRIZES: CustomWheelDataType[] = [
     style: { backgroundColor: '#29ABE2' },
   },
   {
-    option: 'merchTshirt',
+    option: 'merch.Tshirt',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#522785' },
     modalImageUri: merchTshirt,
@@ -30,7 +31,7 @@ export const PRIZES: CustomWheelDataType[] = [
     style: { backgroundColor: '#ED1E79' },
   },
   {
-    option: 'merchPen',
+    option: 'merch.Pen',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#F15A24' },
   },
@@ -40,7 +41,7 @@ export const PRIZES: CustomWheelDataType[] = [
     style: { backgroundColor: '#FBB03B' },
   },
   {
-    option: 'merchTshirt',
+    option: 'merch.Tshirt',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#29ABE2' },
     modalImageUri: merchTshirt,
@@ -51,21 +52,21 @@ export const PRIZES: CustomWheelDataType[] = [
     style: { backgroundColor: '#522785' },
   },
   {
-    option: 'merchPen',
+    option: 'merch.Tshirt',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#ED1E79' },
+    modalImageUri: merchTshirt,
   },
   {
-    option: 'jackpot',
+    option: 'special.jackpot',
     image: { uri: jackpot, sizeMultiplier: 1.3, offsetY: 140 },
     style: { backgroundColor: '#F15A24' },
     modalImageUri: jackpotModal,
   },
   {
-    option: 'merchTshirt',
+    option: 'noPrize',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#FBB03B' },
-    modalImageUri: merchTshirt,
   },
 ];
 
@@ -74,7 +75,8 @@ export const PRIZES_VALUES_MAPPING: Record<string, string> = {
   icp: '$1 in ICP',
   ckBtc: '$1 in ckBTC',
   ckUsdc: '1 ckUSDC',
-  merchTshirt: 'ICP T-shirt',
-  merchPen: 'ICP Pen',
-  jackpot: 'JACKPOT',
+  'merch.Tshirt': 'ICP T-shirt',
+  'merch.Pen': 'ICP Pen',
+  'special.jackpot': 'JACKPOT',
+  noPrize: 'NO PRIZE',
 };

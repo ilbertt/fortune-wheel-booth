@@ -16,10 +16,7 @@ export default function ModalPrize({
 }: ModalPrizeProps) {
   const wonPrize = useMemo(() => PRIZES[prizeNumber], [prizeNumber]);
   const wonPrizeValue = useMemo(
-    () =>
-      PRIZES_VALUES_MAPPING[
-        wonPrize.option as keyof typeof PRIZES_VALUES_MAPPING
-      ],
+    () => PRIZES_VALUES_MAPPING[wonPrize.option],
     [wonPrize]
   );
 
