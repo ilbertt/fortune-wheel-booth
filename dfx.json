@@ -1,6 +1,12 @@
 {
   "canisters": {
     "fortune-wheel-booth-backend": {
+      "dependencies": [
+        "icp_ledger",
+        "ckbtc_ledger",
+        "cketh_ledger",
+        "ckusdc_ledger"
+      ],
       "main": "src/fortune-wheel-booth-backend/main.mo",
       "type": "motoko"
     },
