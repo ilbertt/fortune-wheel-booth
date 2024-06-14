@@ -11,6 +11,7 @@ import { WheelDataType } from 'react-custom-roulette';
 type CustomWheelDataType = WheelDataType & {
   option: string;
   modalImageUri?: string;
+  hideModalImage?: boolean;
 };
 
 export const PRIZES: CustomWheelDataType[] = [
@@ -67,6 +68,7 @@ export const PRIZES: CustomWheelDataType[] = [
     option: 'noPrize',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#FBB03B' },
+    hideModalImage: true,
   },
 ];
 
