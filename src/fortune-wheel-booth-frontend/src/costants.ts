@@ -8,6 +8,7 @@ import { WheelDataType } from 'react-custom-roulette';
 type CustomWheelDataType = WheelDataType & {
   option: string;
   modalImageUri?: string;
+  hideModalImage?: boolean;
 };
 
 export const PRIZES: CustomWheelDataType[] = [
@@ -46,6 +47,7 @@ export const PRIZES: CustomWheelDataType[] = [
     option: 'icp',
     image: { uri: IcpLogoLight, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#FBB03B' },
+    hideModalImage: true,
   },
   {
     option: 'merch.Pen',

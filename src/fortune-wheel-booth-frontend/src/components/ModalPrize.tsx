@@ -37,13 +37,15 @@ export default function ModalPrize({
         {isWinning && (
           <>
             <p className='text-[6vw] font-bold uppercase text-white'>You won</p>
-            <div className='prize-container-animation'>
-              <img
-                src={wonPrize.modalImageUri || wonPrize.image?.uri}
-                alt='prize'
-                className='h-30'
-              />
-            </div>
+            {!wonPrize.hideModalImage && (
+              <div className='prize-container-animation'>
+                <img
+                  src={wonPrize.modalImageUri || wonPrize.image?.uri}
+                  alt='prize'
+                  className='h-30'
+                />
+              </div>
+            )}
           </>
         )}
         <p className='prize-value-animation rounded-2xl bg-dfinity-gradient-dark p-2 px-4 text-[3vw] font-bold text-white'>
