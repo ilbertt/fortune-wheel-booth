@@ -2,7 +2,6 @@ import Astronaut from './assets/images/astronaut-loader.png';
 import ckBtc from './assets/images/ckbtc.png';
 import IcpLogoLight from './assets/images/icp-logo-light.png';
 import jackpot from './assets/images/jackpot.svg';
-import jackpotModal from './assets/images/jackpot-modal.png';
 import { WheelDataType } from 'react-custom-roulette';
 
 type CustomWheelDataType = WheelDataType & {
@@ -31,7 +30,7 @@ export const PRIZES: CustomWheelDataType[] = [
     option: 'special.jackpot',
     image: { uri: jackpot, sizeMultiplier: 1.3, offsetY: 140 },
     style: { backgroundColor: '#F15A24' },
-    modalImageUri: jackpotModal,
+    hideModalImage: true,
   },
   {
     option: 'ckBtc',
@@ -47,7 +46,6 @@ export const PRIZES: CustomWheelDataType[] = [
     option: 'icp',
     image: { uri: IcpLogoLight, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#FBB03B' },
-    hideModalImage: true,
   },
   {
     option: 'merch.Pen',
