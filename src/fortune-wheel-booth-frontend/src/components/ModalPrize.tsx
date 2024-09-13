@@ -1,6 +1,6 @@
 import Fireworks from './Fireworks';
 import CloseIcon from '../assets/close.svg';
-import { PRIZES, PRIZES_VALUES_MAPPING } from '../costants';
+import { PRIZES, PRIZES_VALUES_MAPPING } from '../constants';
 import { Dispatch, SetStateAction, useMemo } from 'react';
 
 interface ModalPrizeProps {
@@ -48,9 +48,11 @@ export default function ModalPrize({
             )}
           </>
         )}
-        <p className='prize-value-animation rounded-2xl bg-dfinity-gradient-dark p-2 px-4 text-[3vw] font-bold text-white'>
-          {wonPrizeValue}
-        </p>
+        {wonPrizeValue && (
+          <p className='prize-value-animation rounded-2xl bg-dfinity-gradient-dark p-2 px-4 text-[3vw] font-bold text-white'>
+            {wonPrizeValue}
+          </p>
+        )}
       </div>
     </div>
   );

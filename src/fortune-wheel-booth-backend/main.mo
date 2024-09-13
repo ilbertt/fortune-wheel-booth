@@ -10,13 +10,14 @@ import Order "mo:base/Order";
 import Buffer "mo:base/Buffer";
 import TrieSet "mo:base/TrieSet";
 import Fuzz "mo:fuzz";
+import Debug "mo:base/Debug";
 
 import IcpLedger "canister:icp_ledger";
 import ckBtcLedger "canister:ckbtc_ledger";
 import ckEthLedger "canister:cketh_ledger";
 import ckUsdcLedger "canister:ckusdc_ledger";
 
-shared ({ caller = initialController }) actor class Main() {
+shared ({ caller = initialController }) actor class Main() = self {
   type Prize = {
     #icp : Nat;
     #ckBtc : Nat;
@@ -33,22 +34,36 @@ shared ({ caller = initialController }) actor class Main() {
     transactionBlockIndex : ?Nat;
   };
 
+  // ICP and ckBTC have 8 decimals: 100_000_000
+  let ICP_TX_AMOUNT_LIMIT = 20_000_000;
+  let CKBTC_TX_AMOUNT_LIMIT = 2_000;
+  // ckETH has 18 decimals: 1_000_000_000_000_000_000
+  let CKETH_TX_AMOUNT_LIMIT = 1_000_000_000_000_000;
+  // ckUSDC has 6 decimals: 1_000_000
+  let CKUSDC_TX_AMOUNT_LIMIT = 1_500_000;
+
+  // exchange rates from Coinbase @ 2024-07-24 21:00 CEST
+  let icp_amount = 11_800_000; // 0.118 ICP ~ $1
+  let ckbtc_amount = 1_720; // 0.0000172 ckBTC ~ $1
+  let cketh_amount = 424_000_000_000_000; // 0.000424 ckETH ~ $1
+  let ckusdc_amount = 1_000_000; // 1 ckUSDC ~ $1
+
   /// The ?Nat8 is the quantity available for that prize. `null` means unlimited.
   ///
   /// The prizes with a maximum quantity are removed when they reach 0.
   private stable var prizesEntries : [(Prize, ?Nat8)] = [
     // -- tokens --
-    // ICP and ckBTC have 8 decimals: 100_000_000
-    (#icp(10_000_000), ?10), // 0.1 ICP ~ $1
-    (#icp(10_000_000), ?10), // 0.1 ICP ~ $1
-    (#ckBtc(1_500), ?10), // 0.000015 ckBTC ~ $1
-    (#ckBtc(1_500), ?10), // 0.000015 ckBTC ~ $1
+    (#icp(icp_amount), null),
+    (#ckBtc(ckbtc_amount), null),
+    (#ckEth(cketh_amount), null),
+    (#ckEth(cketh_amount), null),
+    (#ckUsdc(ckusdc_amount), null),
     // -- merch --
-    (#merch("Pen"), ?18),
-    (#merch("Pen"), ?16),
-    (#merch("Pen"), ?16),
+    // increase the probability of getting the merch prize by repeating it
+    (#merch("tShirt"), ?20),
+    (#merch("pen"), null),
     // -- special --
-    (#special("jackpot"), ?10),
+    (#special("jackpot"), ?5),
   ];
   var prizes : Buffer.Buffer<(Prize, ?Nat8)> = Buffer.fromArray(prizesEntries);
 
@@ -56,6 +71,7 @@ shared ({ caller = initialController }) actor class Main() {
 
   private stable var extractedPrincipalsEntries : [(Principal, Extraction)] = [];
   private let extractedPrincipals = TrieMap.fromEntries<Principal, Extraction>(extractedPrincipalsEntries.vals(), Principal.equal, Principal.hash);
+  var extracting = false;
 
   // persist non-stable structures: https://internetcomputer.org/docs/current/motoko/main/canister-maintenance/upgrades#preupgrade-and-postupgrade-system-methods
   system func preupgrade() {
@@ -101,6 +117,10 @@ shared ({ caller = initialController }) actor class Main() {
   };
 
   public shared ({ caller }) func extract(receiver : Principal) : async Extraction {
+    if (extracting) {
+      throw Error.reject("Extraction already in progress");
+    };
+
     if (not isAdmin(caller)) {
       throw Error.reject("Only admins can extract");
     };
@@ -117,20 +137,37 @@ shared ({ caller = initialController }) actor class Main() {
       throw Error.reject("Already extracted for this principal");
     };
 
+    extracting := true;
+
     let prize = await getRandomPrize();
 
     let transactionBlockIndex = switch (prize) {
       case (#icp(amount)) {
-        ?(await transferIcp(receiver, amount));
+        ?(await transferIcp(receiver, amount, true));
       };
       case (#ckBtc(amount)) {
-        ?(await transferCkBtc(receiver, amount));
+        ?(await transferCkBtc(receiver, amount, true));
       };
       case (#ckEth(amount)) {
-        ?(await transferCkEth(receiver, amount));
+        ?(await transferCkEth(receiver, amount, true));
       };
       case (#ckUsdc(amount)) {
-        ?(await transferCkUsdc(receiver, amount));
+        ?(await transferCkUsdc(receiver, amount, true));
+      };
+      case (#special("jackpot")) {
+        let icp_transfer = transferIcp(receiver, icp_amount, true);
+        let ckbtc_transfer = transferCkBtc(receiver, ckbtc_amount, true);
+        let cketh_transfer = transferCkEth(receiver, cketh_amount, true);
+        let ckusdc_transfer = transferCkUsdc(receiver, ckusdc_amount, true);
+        let icp_idx = await icp_transfer;
+        Debug.print("Jackpot: ICP block index: " # debug_show (icp_idx));
+        let ckbtc_idx = await ckbtc_transfer;
+        Debug.print("Jackpot: ckBTC block index: " # debug_show (ckbtc_idx));
+        let cketh_idx = await cketh_transfer;
+        Debug.print("Jackpot: ckETH block index: " # debug_show (cketh_idx));
+        let ckusdc_idx = await ckusdc_transfer;
+        Debug.print("Jackpot: ckUSDC block index: " # debug_show (ckusdc_idx));
+        null;
       };
       case (_) { null };
     };
@@ -142,6 +179,8 @@ shared ({ caller = initialController }) actor class Main() {
     };
 
     extractedPrincipals.put(receiver, extraction);
+
+    extracting := false;
 
     extraction;
   };
@@ -173,9 +212,9 @@ shared ({ caller = initialController }) actor class Main() {
     };
   };
 
-  private func transferIcp(receiver : Principal, amount : Nat) : async Nat {
-    if (amount > 100_000_000) {
-      throw Error.reject("ICP amount must be less than 100_000_000");
+  private func transferIcp(receiver : Principal, amount : Nat, safe : Bool) : async Nat {
+    if (safe and amount > ICP_TX_AMOUNT_LIMIT) {
+      throw Error.reject("ICP amount must be less than" # debug_show (ICP_TX_AMOUNT_LIMIT));
     };
 
     let transferRes = await IcpLedger.icrc1_transfer({
@@ -197,9 +236,9 @@ shared ({ caller = initialController }) actor class Main() {
     };
   };
 
-  private func transferCkBtc(receiver : Principal, amount : Nat) : async Nat {
-    if (amount > 50_000) {
-      throw Error.reject("ckBTC amount must be less than 50_000");
+  private func transferCkBtc(receiver : Principal, amount : Nat, safe : Bool) : async Nat {
+    if (safe and amount > CKBTC_TX_AMOUNT_LIMIT) {
+      throw Error.reject("ckBTC amount must be less than" # debug_show (CKBTC_TX_AMOUNT_LIMIT));
     };
 
     let transferRes = await ckBtcLedger.icrc1_transfer({
@@ -221,9 +260,9 @@ shared ({ caller = initialController }) actor class Main() {
     };
   };
 
-  private func transferCkEth(receiver : Principal, amount : Nat) : async Nat {
-    if (amount > 10_000_000_000_000_000) {
-      throw Error.reject("ckETH amount must be less than 10_000_000_000_000_000");
+  private func transferCkEth(receiver : Principal, amount : Nat, safe : Bool) : async Nat {
+    if (safe and amount > CKETH_TX_AMOUNT_LIMIT) {
+      throw Error.reject("ckETH amount must be less than" # debug_show (CKETH_TX_AMOUNT_LIMIT));
     };
 
     let transferRes = await ckEthLedger.icrc1_transfer({
@@ -245,9 +284,9 @@ shared ({ caller = initialController }) actor class Main() {
     };
   };
 
-  private func transferCkUsdc(receiver : Principal, amount : Nat) : async Nat {
-    if (amount > 1_100_000) {
-      throw Error.reject("ckBTC amount must be less than 1_100_000");
+  private func transferCkUsdc(receiver : Principal, amount : Nat, safe : Bool) : async Nat {
+    if (safe and amount > CKUSDC_TX_AMOUNT_LIMIT) {
+      throw Error.reject("ckBTC amount must be less than " # debug_show (CKUSDC_TX_AMOUNT_LIMIT));
     };
 
     let transferRes = await ckUsdcLedger.icrc1_transfer({
@@ -303,6 +342,12 @@ shared ({ caller = initialController }) actor class Main() {
     Iter.toArray(extractedPrincipals.entries());
   };
 
+  public func clearExtractions() {
+    for (key in extractedPrincipals.keys()) {
+      extractedPrincipals.delete(key);
+    };
+  };
+
   type ManualSendTokens = {
     #icp : Nat;
     #ckBtc : Nat;
@@ -330,16 +375,16 @@ shared ({ caller = initialController }) actor class Main() {
 
     switch (tokens) {
       case (#icp(amount)) {
-        await transferIcp(receiver, amount);
+        await transferIcp(receiver, amount, false);
       };
       case (#ckBtc(amount)) {
-        await transferCkBtc(receiver, amount);
+        await transferCkBtc(receiver, amount, false);
       };
       case (#ckEth(amount)) {
-        await transferCkEth(receiver, amount);
+        await transferCkEth(receiver, amount, false);
       };
       case (#ckUsdc(amount)) {
-        await transferCkUsdc(receiver, amount);
+        await transferCkUsdc(receiver, amount, false);
       };
     };
   };

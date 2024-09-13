@@ -11,9 +11,6 @@
       "type": "motoko"
     },
     "fortune-wheel-booth-frontend": {
-      "dependencies": [
-        "fortune-wheel-booth-backend"
-      ],
       "source": [
         "src/fortune-wheel-booth-frontend/dist"
       ],

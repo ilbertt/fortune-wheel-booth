@@ -1,5 +1,5 @@
 import { type Prize } from 'declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did';
-import { PRIZES } from '../costants';
+import { PRIZES } from '../constants';
 
 const prizesIndexesForOption = (option: string) => {
   const indexes: number[] = PRIZES.reduce((acc: number[], prize, index) => {
