@@ -13,6 +13,7 @@ import { type ActorSubclass, Identity } from '@dfinity/agent';
 export default function useIcState() {
   const [adminActor, setAdminActor] = useState<ActorSubclass<_SERVICE>>();
   const [adminPrincipal, setAdminPrincipal] = useState<Principal>();
+  const [authClient, setAuthClient] = useState<AuthClient>();
 
   const setupIcState = useCallback((identity: Identity) => {
     const agent = new HttpAgent({ identity });
@@ -30,12 +31,7 @@ export default function useIcState() {
   }, []);
 
   const handleLogin = useCallback(async () => {
-    const authClient = await AuthClient.create({
-      idleOptions: {
-        disableIdle: true,
-      },
-    });
-
+    if (!authClient) return;
     // start the login process and wait for it to finish
     await new Promise((resolve) => {
       authClient.login({
@@ -50,7 +46,7 @@ export default function useIcState() {
 
     const identity = authClient.getIdentity();
     setupIcState(identity);
-  }, [setupIcState]);
+  }, [setupIcState, authClient]);
 
   useEffect(() => {
     (async () => {
@@ -64,6 +60,18 @@ export default function useIcState() {
       }
     })();
   }, [setupIcState, resetIcState]);
+
+  useEffect(() => {
+    (async () => {
+      const ac = await AuthClient.create({
+        idleOptions: {
+          disableIdle: true,
+          disableDefaultIdleCallback: true,
+        },
+      });
+      setAuthClient(ac);
+    })();
+  }, []);
 
   const logout = useCallback(async () => {
     if (adminActor) {

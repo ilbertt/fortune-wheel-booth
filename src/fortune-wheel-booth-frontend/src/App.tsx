@@ -72,10 +72,10 @@ export default function Home() {
           />
           {error && <p className='text-center text-sm text-red-500'>{error}</p>}
           <button
-            className='w-44 rounded-xl bg-white px-4 py-2 text-center shadow-sm'
-            onClick={handleLogin}
+            className='w-44 rounded-xl bg-white px-4 py-2 text-center text-xl shadow-sm'
+            onClick={() => handleLogin()}
           >
-            <p className='text-xl'>Admin</p>
+            Admin
           </button>
           <a
             className='w-44 rounded-xl bg-white px-4 py-2 text-center text-xl shadow-sm'

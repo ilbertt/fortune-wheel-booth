@@ -27,10 +27,10 @@ function FortuneWheelPage() {
 
   const onStopSpinning = useCallback(() => {
     setShowModalPrize(true);
+    setMustSpin(false);
 
     setTimeout(() => {
       setShowModalPrize(false);
-      setMustSpin(false);
       setPrizeNumber(-1);
     }, PRIZE_MODAL_DURATION_MILLIS);
   }, []);

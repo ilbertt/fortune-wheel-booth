@@ -1,0 +1,12 @@
+(
+  vec {
+    record { variant { icp = 10_000_000 : nat }; opt (10 : nat8) };
+    record { variant { icp = 10_000_000 : nat }; opt (10 : nat8) };
+    record { variant { ckBtc = 1_500 : nat }; opt (10 : nat8) };
+    record { variant { ckBtc = 1_500 : nat }; opt (10 : nat8) };
+    record { variant { merch = "Pen" }; opt (18 : nat8) };
+    record { variant { merch = "Pen" }; opt (16 : nat8) };
+    record { variant { merch = "Pen" }; opt (16 : nat8) };
+    record { variant { special = "jackpot" }; opt (10 : nat8) };
+  },
+)

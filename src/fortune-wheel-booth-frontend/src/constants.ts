@@ -1,3 +1,5 @@
+import { WheelDataType } from 'react-custom-roulette';
+
 import Astronaut from './assets/images/astronaut-loader.png';
 import ckBtc from './assets/images/ckbtc.png';
 import ckEth from './assets/images/cketh.png';
@@ -5,8 +7,7 @@ import ckUsdc from './assets/images/ckusdc.svg';
 import IcpLogoLight from './assets/images/icp-logo-light.png';
 import jackpot from './assets/images/jackpot.svg';
 import jackpotModal from './assets/images/jackpot-modal.png';
-import merchTshirt from './assets/images/merch-tshirt.png';
-import { WheelDataType } from 'react-custom-roulette';
+import marchTshirt from './assets/images/merch-tshirt.png';
 
 type CustomWheelDataType = WheelDataType & {
   option: string;
@@ -21,42 +22,15 @@ export const PRIZES: CustomWheelDataType[] = [
     style: { backgroundColor: '#29ABE2' },
   },
   {
-    option: 'merch.Tshirt',
+    option: 'merch.tShirt',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#522785' },
-    modalImageUri: merchTshirt,
+    modalImageUri: marchTshirt,
   },
   {
     option: 'ckUsdc',
     image: { uri: ckUsdc, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#ED1E79' },
-  },
-  {
-    option: 'merch.Pen',
-    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#F15A24' },
-  },
-  {
-    option: 'icp',
-    image: { uri: IcpLogoLight, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#FBB03B' },
-  },
-  {
-    option: 'merch.Tshirt',
-    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#29ABE2' },
-    modalImageUri: merchTshirt,
-  },
-  {
-    option: 'ckBtc',
-    image: { uri: ckBtc, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#522785' },
-  },
-  {
-    option: 'merch.Tshirt',
-    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#ED1E79' },
-    modalImageUri: merchTshirt,
   },
   {
     option: 'special.jackpot',
@@ -65,20 +39,33 @@ export const PRIZES: CustomWheelDataType[] = [
     modalImageUri: jackpotModal,
   },
   {
-    option: 'noPrize',
+    option: 'ckEth',
+    image: { uri: ckEth, sizeMultiplier: 0.7, offsetY: 220 },
+    style: { backgroundColor: '#29ABE2' },
+  },
+  {
+    option: 'ckBtc',
+    image: { uri: ckBtc, sizeMultiplier: 0.7, offsetY: 220 },
+    style: { backgroundColor: '#522785' },
+  },
+  {
+    option: 'icp',
+    image: { uri: IcpLogoLight, sizeMultiplier: 0.7, offsetY: 220 },
+    style: { backgroundColor: '#ED1E79' },
+  },
+  {
+    option: 'merch.pen',
     image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#FBB03B' },
-    hideModalImage: true,
+    style: { backgroundColor: '#F15A24' },
   },
 ];
 
-export const PRIZES_VALUES_MAPPING: Record<string, string> = {
+export const PRIZES_VALUES_MAPPING: Record<string, string | null> = {
   ckEth: '$1 in ckETH',
   icp: '$1 in ICP',
   ckBtc: '$1 in ckBTC',
   ckUsdc: '1 ckUSDC',
-  'merch.Tshirt': 'ICP T-shirt',
-  'merch.Pen': 'ICP Pen',
-  'special.jackpot': 'JACKPOT',
-  noPrize: 'NO PRIZE',
+  'merch.tShirt': null,
+  'merch.pen': 'ICP Pen',
+  'special.jackpot': null,
 };
