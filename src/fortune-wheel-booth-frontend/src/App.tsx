@@ -9,7 +9,7 @@ import icpMainLogo from './assets/icp-main-logo.svg';
 import useIcState from './hooks/useIcState';
 
 export default function Home() {
-  const { isAnonymous, logout, handleLogin, adminActor, adminPrincipal } =
+  const { isAnonymous, logout, handleLogin, adminActor, adminPrincipal} =
     useIcState();
   const [error, setError] = useState<string | undefined>();
   const [debouncePrizeExtraction, setDebouncePrizeExtraction] =
@@ -32,11 +32,20 @@ export default function Home() {
     setDebouncePrizeExtraction(true);
     setExtractionResult(undefined);
     if (adminActor) {
+      // canister call can still trap for a number of reasons
       try {
         const userPrincipal: Principal = Principal.fromText(text);
         const extraction = await adminActor.extract(userPrincipal);
         console.log('Extraction result:', extraction);
-        setExtractionResult(extraction);
+        if ('ok' in extraction) {
+          setExtractionResult(extraction.ok);
+      } else {
+          console.error(extraction);
+          setError(extraction.err);
+          if (extraction.err.includes('Only admins can extract')) {
+            logout();
+          }
+      }
 
         setTimeout(() => {
           setExtractionResult(undefined);
@@ -44,10 +53,7 @@ export default function Home() {
       } catch (err: any) {
         console.error(err);
         const errorMsg = err.message || 'Failed to extract: Unknown error';
-        setError(errorMsg);
-        if (errorMsg.includes('Only admins can extract')) {
-          logout();
-        }
+        setError(err);
       }
     }
     setIsExtracting(false);

@@ -11,6 +11,7 @@ import Buffer "mo:base/Buffer";
 import TrieSet "mo:base/TrieSet";
 import Fuzz "mo:fuzz";
 import Debug "mo:base/Debug";
+import Result "mo:base/Result";
 
 import IcpLedger "canister:icp_ledger";
 import ckBtcLedger "canister:ckbtc_ledger";
@@ -31,7 +32,7 @@ shared ({ caller = initialController }) actor class Main() = self {
   type Extraction = {
     extractedAt : Time.Time;
     prize : Prize;
-    transactionBlockIndex : ?Nat;
+   // transactionBlockIndex : ?Nat;
   };
 
   // ICP and ckBTC have 8 decimals: 100_000_000
@@ -116,73 +117,79 @@ shared ({ caller = initialController }) actor class Main() = self {
     Option.isSome(extractedPrincipals.get(principal));
   };
 
-  public shared ({ caller }) func extract(receiver : Principal) : async Extraction {
+  public shared ({ caller }) func extract(receiver : Principal) : async Result.Result<Extraction, Text> {
     if (extracting) {
-      throw Error.reject("Extraction already in progress");
+      return #err("Extraction already in progress");
     };
 
     if (not isAdmin(caller)) {
-      throw Error.reject("Only admins can extract");
+      return #err("Only admins can extract");
     };
 
     if (Principal.isAnonymous(receiver)) {
-      throw Error.reject("Anonymous principal cannot receive prizes");
+      return #err("Anonymous principal cannot receive prizes");
     };
 
     if (Principal.fromText("aaaaa-aa") == receiver) {
-      throw Error.reject("Management canister cannot receive prizes");
+      return #err("Management canister cannot receive prizes");
     };
 
     if (isPrincipalExtracted(receiver)) {
-      throw Error.reject("Already extracted for this principal");
+      return #err("Already extracted for this principal");
     };
 
     extracting := true;
 
     let prize = await getRandomPrize();
 
-    let transactionBlockIndex = switch (prize) {
-      case (#icp(amount)) {
-        ?(await transferIcp(receiver, amount, true));
+    try{
+      switch (prize) {
+        case (#icp(amount)) {
+          (ignore await transferIcp(receiver, amount, true));
+        };
+        case (#ckBtc(amount)) {
+          (ignore await transferCkBtc(receiver, amount, true));
+        };
+        case (#ckEth(amount)) {
+          (ignore await transferCkEth(receiver, amount, true));
+        };
+        case (#ckUsdc(amount)) {
+          (ignore await transferCkUsdc(receiver, amount, true));
+        };
+        case (#special("jackpot")) {
+          let icp_transfer = transferIcp(receiver, icp_amount, true);
+          let ckbtc_transfer = transferCkBtc(receiver, ckbtc_amount, true);
+          let cketh_transfer = transferCkEth(receiver, cketh_amount, true);
+          let ckusdc_transfer = transferCkUsdc(receiver, ckusdc_amount, true);
+          let icp_idx = await icp_transfer;
+          Debug.print("Jackpot: ICP block index: " # debug_show (icp_idx));
+          let ckbtc_idx = await ckbtc_transfer;
+          Debug.print("Jackpot: ckBTC block index: " # debug_show (ckbtc_idx));
+          let cketh_idx = await cketh_transfer;
+          Debug.print("Jackpot: ckETH block index: " # debug_show (cketh_idx));
+          let ckusdc_idx = await ckusdc_transfer;
+          Debug.print("Jackpot: ckUSDC block index: " # debug_show (ckusdc_idx));
+          //null;
+        };
+        case (_) {};
       };
-      case (#ckBtc(amount)) {
-        ?(await transferCkBtc(receiver, amount, true));
-      };
-      case (#ckEth(amount)) {
-        ?(await transferCkEth(receiver, amount, true));
-      };
-      case (#ckUsdc(amount)) {
-        ?(await transferCkUsdc(receiver, amount, true));
-      };
-      case (#special("jackpot")) {
-        let icp_transfer = transferIcp(receiver, icp_amount, true);
-        let ckbtc_transfer = transferCkBtc(receiver, ckbtc_amount, true);
-        let cketh_transfer = transferCkEth(receiver, cketh_amount, true);
-        let ckusdc_transfer = transferCkUsdc(receiver, ckusdc_amount, true);
-        let icp_idx = await icp_transfer;
-        Debug.print("Jackpot: ICP block index: " # debug_show (icp_idx));
-        let ckbtc_idx = await ckbtc_transfer;
-        Debug.print("Jackpot: ckBTC block index: " # debug_show (ckbtc_idx));
-        let cketh_idx = await cketh_transfer;
-        Debug.print("Jackpot: ckETH block index: " # debug_show (cketh_idx));
-        let ckusdc_idx = await ckusdc_transfer;
-        Debug.print("Jackpot: ckUSDC block index: " # debug_show (ckusdc_idx));
-        null;
-      };
-      case (_) { null };
+
+    } catch (e) {
+      extracting := false;
+      return #err("LedgerError: " # Error.message(e));
     };
 
     let extraction : Extraction = {
       extractedAt = Time.now();
       prize;
-      transactionBlockIndex;
+      //transactionBlockIndex;
     };
 
     extractedPrincipals.put(receiver, extraction);
 
     extracting := false;
 
-    extraction;
+    return #ok(extraction);
   };
 
   private func getRandomPrize() : async Prize {
@@ -231,7 +238,7 @@ shared ({ caller = initialController }) actor class Main() = self {
         value;
       };
       case (#Err(error)) {
-        throw Error.reject(debug_show (error));
+        throw Error.reject("ICP: " # debug_show (error));
       };
     };
   };
@@ -255,7 +262,7 @@ shared ({ caller = initialController }) actor class Main() = self {
         value;
       };
       case (#Err(error)) {
-        throw Error.reject(debug_show (error));
+        throw Error.reject("ckBTC: " # debug_show (error));
       };
     };
   };
@@ -279,7 +286,7 @@ shared ({ caller = initialController }) actor class Main() = self {
         value;
       };
       case (#Err(error)) {
-        throw Error.reject(debug_show (error));
+        throw Error.reject("ckETH: " # debug_show (error));
       };
     };
   };
@@ -303,7 +310,7 @@ shared ({ caller = initialController }) actor class Main() = self {
         value;
       };
       case (#Err(error)) {
-        throw Error.reject(debug_show (error));
+        throw Error.reject("ckUSDC: " # debug_show (error));
       };
     };
   };
