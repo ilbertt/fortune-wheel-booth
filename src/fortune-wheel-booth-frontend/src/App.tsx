@@ -45,9 +45,6 @@ export default function Home() {
         console.error(err);
         const errorMsg = err.message || 'Failed to extract: Unknown error';
         setError(errorMsg);
-        if (errorMsg.includes('Only admins can extract')) {
-          logout();
-        }
       }
     }
     setIsExtracting(false);
