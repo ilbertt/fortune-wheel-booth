@@ -15,7 +15,7 @@ import {
 
 const ACTOR = createActor(canisterId);
 
-const PRIZE_MODAL_DURATION_MILLIS = 30_000;
+const PRIZE_MODAL_DURATION_MILLIS = 15_000;
 const FETCH_EXTRACTION_INTERVAL_MILLIS = 2_000;
 
 function FortuneWheelPage() {
