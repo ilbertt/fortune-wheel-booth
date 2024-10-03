@@ -42,10 +42,10 @@ shared ({ caller = initialController }) actor class Main() = self {
   // ckUSDC has 6 decimals: 1_000_000
   let CKUSDC_TX_AMOUNT_LIMIT = 1_500_000;
 
-  // exchange rates from Coinbase @ 2024-07-24 21:00 CEST
-  let icp_amount = 11_800_000; // 0.118 ICP ~ $1
-  let ckbtc_amount = 1_720; // 0.0000172 ckBTC ~ $1
-  let cketh_amount = 424_000_000_000_000; // 0.000424 ckETH ~ $1
+  // exchange rates from Coinbase @ 2024-07-26 10:30 CEST
+  let icp_amount = 10_950_000; // 0.1095 ICP ~ $1
+  let ckbtc_amount = 1_570; // 0.0000157 ckBTC ~ $1
+  let cketh_amount = 380_000_000_000_000; // 0.000380 ckETH ~ $1
   let ckusdc_amount = 1_000_000; // 1 ckUSDC ~ $1
 
   /// The ?Nat8 is the quantity available for that prize. `null` means unlimited.
@@ -54,12 +54,11 @@ shared ({ caller = initialController }) actor class Main() = self {
   private stable var prizesEntries : [(Prize, ?Nat8)] = [
     // -- tokens --
     (#icp(icp_amount), null),
-    (#ckBtc(ckbtc_amount), null),
     (#ckEth(cketh_amount), null),
     (#ckEth(cketh_amount), null),
     (#ckUsdc(ckusdc_amount), null),
     // -- merch --
-    // increase the probability of getting the merch prize by repeating it
+    (#merch("tShirt"), ?20),
     (#merch("tShirt"), ?20),
     (#merch("pen"), null),
     // -- special --
