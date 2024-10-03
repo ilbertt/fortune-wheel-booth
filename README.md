@@ -64,10 +64,10 @@ Which will start a server at `http://localhost:8080`, proxying API requests to t
 
 ## Usage
 
-To get the latest extraction (you don't need to be authenticated), use the following command:
+To get the last extraction (you don't need to be authenticated), use the following command:
 
 ```bash
-dfx canister call fortune-wheel-booth-backend getLatestExtraction
+dfx canister call fortune-wheel-booth-backend getLastExtraction
 ```
 
 ### Admin
@@ -98,6 +98,22 @@ To fetch all extractions, use the following command:
 
 ```bash
 dfx canister call fortune-wheel-booth-backend getExtractions
+```
+
+#### `getExtractionsCount`
+
+To fetch the number of extractions, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend getExtractionsCount
+```
+
+#### `clearExtractions`
+
+To clear all the extractions made until now, use the following command:
+
+```bash
+dfx canister call fortune-wheel-booth-backend clearExtractions
 ```
 
 #### `manualTransfer`
