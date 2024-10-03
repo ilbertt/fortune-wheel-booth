@@ -42,7 +42,7 @@ export default function ModalPrize({
                 <img
                   src={wonPrize.modalImageUri || wonPrize.image?.uri}
                   alt='prize'
-                  className='h-30'
+                  className='max-h-[500px]'
                 />
               </div>
             )}
