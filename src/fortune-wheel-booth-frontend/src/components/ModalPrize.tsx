@@ -1,7 +1,7 @@
-import Fireworks from './Fireworks';
 import CloseIcon from '../assets/close.svg';
 import { PRIZES, PRIZES_VALUES_MAPPING } from '../constants';
 import { Dispatch, SetStateAction, useMemo } from 'react';
+import modalWinningBottom from '../assets/images/modal-winning-bottom.png';
 
 interface ModalPrizeProps {
   prizeNumber: number;
@@ -22,7 +22,7 @@ export default function ModalPrize({
   const isWinning = useMemo(() => wonPrize.option !== 'noPrize', [wonPrize]);
 
   return (
-    <div className='absolute z-20 flex h-full w-full flex-col items-center justify-center backdrop-blur-2xl'>
+    <div className="absolute z-20 flex h-full w-full flex-col items-center justify-center  bg-[url('/page-bg.jpeg')] bg-cover bg-no-repeat">
       <button
         onClick={() => {
           setShowModalPrize(false);
@@ -32,20 +32,23 @@ export default function ModalPrize({
       >
         <img src={CloseIcon} className='h-[3vw]' alt='Close Icon'></img>
       </button>
-      {isWinning && <Fireworks />}
-      <div className='flex flex-col items-center justify-center gap-4'>
-        {isWinning && (
+      <div className='flex flex-col items-center justify-center'>
+        {!wonPrize.hideModalImage && (
           <>
-            <p className='text-[6vw] font-bold uppercase text-white'>You won</p>
-            {!wonPrize.hideModalImage && (
-              <div className='prize-container-animation'>
-                <img
-                  src={wonPrize.modalImageUri || wonPrize.image?.uri}
-                  alt='prize'
-                  className='max-h-[500px]'
-                />
-              </div>
-            )}
+            <div
+              className={
+                isWinning
+                  ? 'modal-prize-container-animation'
+                  : 'modal-prize-container-animation-no-win'
+              }
+            >
+              <img
+                src={wonPrize.modalImageUri || wonPrize.image?.uri}
+                alt='prize'
+                className='max-h-[600px]'
+              />
+            </div>
+            {isWinning && <img src={modalWinningBottom} />}
           </>
         )}
         {wonPrizeValue && (
