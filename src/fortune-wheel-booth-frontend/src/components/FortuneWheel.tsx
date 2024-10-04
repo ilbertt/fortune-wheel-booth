@@ -21,7 +21,10 @@ export default function FortuneWheel({
         prizeNumber={prizeNumber}
         data={PRIZES}
         onStopSpinning={onStopSpinning}
-        outerBorderWidth={0}
+        outerBorderWidth={3}
+        outerBorderColor='white'
+        radiusLineWidth={3}
+        radiusLineColor='white'
         pointerProps={{
           src: Pointer,
           style: { transform: 'translate(-22%, 20%) rotate(250deg)' },

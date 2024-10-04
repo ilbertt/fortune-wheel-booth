@@ -48,7 +48,9 @@ export default function ModalPrize({
                 className='max-h-[600px]'
               />
             </div>
-            {isWinning && <img src={modalWinningBottom} />}
+            {isWinning && (
+              <img className='-translate-y-10' src={modalWinningBottom} />
+            )}
           </>
         )}
         {wonPrizeValue && (

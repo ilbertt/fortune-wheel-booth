@@ -66,7 +66,7 @@ function FortuneWheelPage() {
   return (
     <main className="flex justify-center items-center flex-col relative h-full bg-[url('/page-bg.jpeg')] bg-no-repeat bg-cover">
       <div className='flex justify-center items-center absolute top-10 left-5'>
-        <img className='max-w-[25vw] z-30' src='/brand-top-left-logo.png' alt='brand top left logo' />
+        <img className='max-w-[25vw] z-30' src='/brand-logo.png' alt='brand top left logo' />
       </div>
       <div className='flex justify-center items-center absolute top-10 right-5 h-64'>
         <img className='h-full rounded-2xl' src='/qrcode-oisy.png' alt='Oisy.com qr code' />

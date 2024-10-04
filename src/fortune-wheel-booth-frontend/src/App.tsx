@@ -64,7 +64,7 @@ export default function Home() {
         <div className='flex h-full w-full flex-col items-center justify-center gap-4'>
           <img
             className='absolute left-0 right-0 top-10 z-20 m-auto h-32'
-            src='/hub-logo-light.svg'
+            src='/brand-logo.png'
             alt='icpItCh logo'
           />
           {error && <p className='text-center text-sm text-red-500'>{error}</p>}
