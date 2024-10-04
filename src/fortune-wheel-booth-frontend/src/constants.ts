@@ -1,13 +1,34 @@
 import { WheelDataType } from 'react-custom-roulette';
 
-import Astronaut from './assets/images/astronaut-loader.png';
-import ckBtc from './assets/images/ckbtc.png';
-import ckEth from './assets/images/cketh.png';
-import ckUsdc from './assets/images/ckusdc.svg';
-import IcpLogoLight from './assets/images/icp-logo-light.png';
-import jackpot from './assets/images/jackpot.svg';
-import jackpotModal from './assets/images/jackpot-modal.png';
-import marchTshirt from './assets/images/merch-tshirt.png';
+// PRIZES
+import arrosticiniFornacella from './assets/images/prizes/arrosticini-fornacella.png';
+import bitomatCoupon from './assets/images/prizes/bitomat-coupon.png';
+import ledgerWallet from './assets/images/prizes/ledger-wallet.png';
+import caramelleFiori from './assets/images/prizes/caramelle-fiori.png';
+import brickVino from './assets/images/prizes/brick-vino.png';
+import blockchainBeachTicket from './assets/images/prizes/blockchain-beach-ticket.png';
+import magliettaSfLibroSfPennaSf from './assets/images/prizes/maglietta-sf-libro-sf-penna-sf.png';
+
+// MODAL PRIZES
+import modal_arrosticini from './assets/images/modals/arrosticini.png';
+import modal_fornacella from './assets/images/modals/fornacella.png';
+import modal_bitomatCoupon from './assets/images/modals/bitomat-coupon.png';
+import modal_ledgerWallet from './assets/images/modals/ledger-wallet.png';
+import modal_caramelle from './assets/images/modals/caramelle.png';
+import modal_fiori from './assets/images/modals/fiori.png';
+import modal_brickVino from './assets/images/modals/brick-vino.png';
+import modal_blockchainBeachTicket from './assets/images/modals/blockchain-beach-ticket.png';
+import modal_magliettaSf from './assets/images/modals/maglietta-sf.png';
+import modal_libroSf from './assets/images/modals/libro-sf.png';
+import modal_pennaSf from './assets/images/modals/penna-sf.png';
+
+// default prizes
+import noPrize from './assets/images/prizes/no-prize.png';
+import modal_noPrize from './assets/images/modals/no-prize.png';
+const NO_PRIZE = 'noPrize';
+
+const BLUE_COLOR = '#216AB2';
+const LIGHT_BLUE_COLOR = '#36BEDE';
 
 type CustomWheelDataType = WheelDataType & {
   option: string;
@@ -17,55 +38,89 @@ type CustomWheelDataType = WheelDataType & {
 
 export const PRIZES: CustomWheelDataType[] = [
   {
-    option: 'ckEth',
-    image: { uri: ckEth, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#29ABE2' },
+    option: 'merch.arrosticini',
+    image: { uri: arrosticiniFornacella, sizeMultiplier: 0.6, offsetY: 220 },
+    style: { backgroundColor: BLUE_COLOR },
+    modalImageUri: modal_arrosticini,
   },
   {
-    option: 'merch.tShirt',
-    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#522785' },
-    modalImageUri: marchTshirt,
+    option: 'merch.bitomat-coupon',
+    image: { uri: bitomatCoupon, sizeMultiplier: 0.6, offsetY: 220 },
+    style: { backgroundColor: LIGHT_BLUE_COLOR },
+    modalImageUri: modal_bitomatCoupon,
   },
   {
-    option: 'ckUsdc',
-    image: { uri: ckUsdc, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#ED1E79' },
+    option: 'merch.libro-sf',
+    image: {
+      uri: magliettaSfLibroSfPennaSf,
+      sizeMultiplier: 0.6,
+      offsetY: 220,
+    },
+    style: { backgroundColor: BLUE_COLOR },
+    modalImageUri: modal_libroSf,
   },
   {
-    option: 'special.jackpot',
-    image: { uri: jackpot, sizeMultiplier: 1.3, offsetY: 140 },
-    style: { backgroundColor: '#F15A24' },
-    modalImageUri: jackpotModal,
+    option: 'merch.ledger-wallet',
+    image: { uri: ledgerWallet, sizeMultiplier: 0.6, offsetY: 220 },
+    style: { backgroundColor: LIGHT_BLUE_COLOR },
+    modalImageUri: modal_ledgerWallet,
   },
   {
-    option: 'ckEth',
-    image: { uri: ckEth, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#29ABE2' },
+    option: 'merch.caramelle',
+    image: { uri: caramelleFiori, sizeMultiplier: 0.6, offsetY: 220 },
+    style: { backgroundColor: BLUE_COLOR },
+    modalImageUri: modal_caramelle,
   },
   {
-    option: 'ckBtc',
-    image: { uri: ckBtc, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#522785' },
+    option: 'merch.brick-vino',
+    image: { uri: brickVino, sizeMultiplier: 0.6, offsetY: 220 },
+    style: { backgroundColor: LIGHT_BLUE_COLOR },
+    modalImageUri: modal_brickVino,
   },
   {
-    option: 'icp',
-    image: { uri: IcpLogoLight, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#ED1E79' },
+    option: 'merch.maglietta-sf',
+    image: {
+      uri: magliettaSfLibroSfPennaSf,
+      sizeMultiplier: 0.6,
+      offsetY: 220,
+    },
+    style: { backgroundColor: BLUE_COLOR },
+    modalImageUri: modal_magliettaSf,
   },
   {
-    option: 'merch.pen',
-    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
-    style: { backgroundColor: '#F15A24' },
+    option: 'merch.fornacella',
+    image: { uri: arrosticiniFornacella, sizeMultiplier: 0.6, offsetY: 220 },
+    style: { backgroundColor: LIGHT_BLUE_COLOR },
+    modalImageUri: modal_fornacella,
+  },
+  {
+    option: 'merch.blockchain-beach-ticket',
+    image: { uri: blockchainBeachTicket, sizeMultiplier: 0.6, offsetY: 220 },
+    style: { backgroundColor: BLUE_COLOR },
+    modalImageUri: modal_blockchainBeachTicket,
+  },
+  {
+    option: 'merch.fiori',
+    image: { uri: caramelleFiori, sizeMultiplier: 0.6, offsetY: 220 },
+    style: { backgroundColor: LIGHT_BLUE_COLOR },
+    modalImageUri: modal_fiori,
+  },
+  {
+    option: 'merch.penna-sf',
+    image: {
+      uri: magliettaSfLibroSfPennaSf,
+      sizeMultiplier: 0.6,
+      offsetY: 220,
+    },
+    style: { backgroundColor: BLUE_COLOR },
+    modalImageUri: modal_pennaSf,
+  },
+  {
+    option: NO_PRIZE,
+    image: { uri: noPrize, sizeMultiplier: 0.6, offsetY: 220 },
+    style: { backgroundColor: LIGHT_BLUE_COLOR },
+    modalImageUri: modal_noPrize,
   },
 ];
 
-export const PRIZES_VALUES_MAPPING: Record<string, string | null> = {
-  ckEth: '$1 in ckETH',
-  icp: '$1 in ICP',
-  ckBtc: '$1 in ckBTC',
-  ckUsdc: '1 ckUSDC',
-  'merch.tShirt': null,
-  'merch.pen': 'ICP Pen',
-  'special.jackpot': null,
-};
+export const PRIZES_VALUES_MAPPING: Record<string, string | null> = {};

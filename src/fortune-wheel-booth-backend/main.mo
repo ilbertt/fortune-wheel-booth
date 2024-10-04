@@ -52,17 +52,18 @@ shared ({ caller = initialController }) actor class Main() = self {
   ///
   /// The prizes with a maximum quantity are removed when they reach 0.
   private stable var prizesEntries : [(Prize, ?Nat8)] = [
-    // -- tokens --
-    (#icp(icp_amount), null),
-    (#ckEth(cketh_amount), null),
-    (#ckEth(cketh_amount), null),
-    (#ckUsdc(ckusdc_amount), null),
-    // -- merch --
-    (#merch("tShirt"), ?20),
-    (#merch("tShirt"), ?20),
-    (#merch("pen"), null),
-    // -- special --
-    (#special("jackpot"), ?5),
+    (#merch("arrosticini"), ?3),
+    (#merch("fornacella"), ?1),
+    (#merch("bitomat-coupon"), ?50),
+    (#merch("ledger-wallet"), ?3),
+    (#merch("caramelle"), ?5),
+    (#merch("fiori"), ?5),
+    (#merch("brick-vino"), ?10),
+    (#merch("blockchain-beach-ticket"), ?50),
+    (#merch("maglietta-sf"), ?2),
+    (#merch("libro-sf"), ?3),
+    (#merch("penna-sf"), ?35),
+    (#noPrize, ?80),
   ];
   var prizes : Buffer.Buffer<(Prize, ?Nat8)> = Buffer.fromArray(prizesEntries);
 
