@@ -1,6 +1,6 @@
 import { Wheel } from 'react-custom-roulette';
 import { PRIZES } from '../constants';
-import IcpLogo from '../assets/images/icp-logo-dark.png';
+import Logo from '../assets/images/fortune-wheel-logo.png';
 import Pointer from '../assets/images/pointer.png';
 
 interface FortuneWheelProps {
@@ -29,8 +29,8 @@ export default function FortuneWheel({
       />
       <img
         className='absolute bottom-2/4 left-0 right-0 top-2/4 z-10 h-[10vw] w-[10vw]'
-        src={IcpLogo}
-        alt='icp logo'
+        src={Logo}
+        alt='fortune wheel logo'
       />
     </div>
   );
