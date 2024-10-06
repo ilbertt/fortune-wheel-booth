@@ -1,6 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import React, { useCallback, useEffect, useState } from 'react';
-
+import { useCallback, useEffect, useState } from 'react';
 import {
   canisterId,
   createActor,
@@ -10,13 +9,22 @@ import { HttpAgent } from '@dfinity/agent';
 import { _SERVICE } from 'declarations/fortune-wheel-booth-backend/fortune-wheel-booth-backend.did';
 import { type ActorSubclass, Identity } from '@dfinity/agent';
 
+const IS_MAINNET = process.env.DFX_NETWORK === 'ic';
+// Uncomment if you use a custom domain and set this value to your frontend canister URL under the icp0.io domain.
+// You should also uncomment the derivationOrigin in the login function.
+// TODO: use an environment variable for this.
+// const MAINNET_FRONTEND_ORIGIN = 'https://bo4w4-iaaaa-aaaao-a3nyq-cai.icp0.io';
+
 export default function useIcState() {
   const [adminActor, setAdminActor] = useState<ActorSubclass<_SERVICE>>();
   const [adminPrincipal, setAdminPrincipal] = useState<Principal>();
   const [authClient, setAuthClient] = useState<AuthClient>();
 
   const setupIcState = useCallback((identity: Identity) => {
-    const agent = new HttpAgent({ identity });
+    const agent = new HttpAgent({
+      identity,
+      host: IS_MAINNET ? 'https://icp-api.io' : undefined,
+    });
     const actor = createActor(canisterId, {
       agent,
     });
@@ -36,11 +44,17 @@ export default function useIcState() {
     await new Promise((resolve) => {
       authClient.login({
         maxTimeToLive: BigInt(86_400_000_000_000),
-        identityProvider:
-          process.env.DFX_NETWORK === 'ic'
-            ? 'https://identity.ic0.app'
-            : `http://rdmx6-jaaaa-aaaaa-aaadq-cai.localhost:4943/`,
+        identityProvider: IS_MAINNET
+          ? 'https://identity.ic0.app'
+          : `http://rdmx6-jaaaa-aaaaa-aaadq-cai.localhost:4943/`,
         onSuccess: resolve,
+        // uncomment if you use a custom domain
+        // derivationOrigin:
+        //   // handle custom domain to avoid generating a different principal
+        //   // see https://github.com/dfinity/internet-identity/blob/main/docs/ii-spec.mdx#alternative-frontend-origins
+        //   IS_MAINNET && window.location.origin !== MAINNET_FRONTEND_ORIGIN
+        //     ? MAINNET_FRONTEND_ORIGIN
+        //     : undefined,
       });
     });
 

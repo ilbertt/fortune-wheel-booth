@@ -1,13 +1,22 @@
 import { WheelDataType } from 'react-custom-roulette';
 
-import Astronaut from './assets/images/astronaut-loader.png';
-import ckBtc from './assets/images/ckbtc.png';
-import ckEth from './assets/images/cketh.png';
-import ckUsdc from './assets/images/ckusdc.svg';
-import IcpLogoLight from './assets/images/icp-logo-light.png';
-import jackpot from './assets/images/jackpot.svg';
-import jackpotModal from './assets/images/jackpot-modal.png';
-import marchTshirt from './assets/images/merch-tshirt.png';
+// PRIZES
+import merchTshirtPen from './assets/images/prizes/merch-tshirt-pen.png';
+import ckBtc from './assets/images/prizes/ckbtc.png';
+import ckEth from './assets/images/prizes/cketh.png';
+import ckUsdc from './assets/images/prizes/ckusdc.svg';
+import icp from './assets/images/prizes/icp.png';
+import jackpot from './assets/images/prizes/jackpot.svg';
+
+// --- MODALS ---
+import modal_jackpot from './assets/images/modals/jackpot.png';
+import modal_merchTshirt from './assets/images/modals/merch-tshirt.png';
+
+// --- DEFAULT PRIZES ---
+// (uncomment if needed)
+// import noPrize from './assets/images/prizes/no-prize.png';
+// import modal_noPrize from './assets/images/modals/no-prize.png';
+// const NO_PRIZE = 'noPrize';
 
 type CustomWheelDataType = WheelDataType & {
   option: string;
@@ -23,9 +32,9 @@ export const PRIZES: CustomWheelDataType[] = [
   },
   {
     option: 'merch.tShirt',
-    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
+    image: { uri: merchTshirtPen, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#522785' },
-    modalImageUri: marchTshirt,
+    modalImageUri: modal_merchTshirt,
   },
   {
     option: 'ckUsdc',
@@ -36,7 +45,7 @@ export const PRIZES: CustomWheelDataType[] = [
     option: 'special.jackpot',
     image: { uri: jackpot, sizeMultiplier: 1.3, offsetY: 140 },
     style: { backgroundColor: '#F15A24' },
-    modalImageUri: jackpotModal,
+    modalImageUri: modal_jackpot,
   },
   {
     option: 'ckEth',
@@ -50,13 +59,14 @@ export const PRIZES: CustomWheelDataType[] = [
   },
   {
     option: 'icp',
-    image: { uri: IcpLogoLight, sizeMultiplier: 0.7, offsetY: 220 },
+    image: { uri: icp, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#ED1E79' },
   },
   {
     option: 'merch.pen',
-    image: { uri: Astronaut, sizeMultiplier: 0.7, offsetY: 220 },
+    image: { uri: merchTshirtPen, sizeMultiplier: 0.7, offsetY: 220 },
     style: { backgroundColor: '#F15A24' },
+    hideModalImage: true,
   },
 ];
 

@@ -89,7 +89,7 @@ canvas {
   height: 40vw !important;
 }
 
-@keyframes fadeIn {
+@keyframes rotateScaleIn {
   from {
     opacity: 0;
     transform: rotate(0deg) scale(0);
@@ -101,8 +101,12 @@ canvas {
   }
 }
 
-.prize-animation {
-  animation: swing 1s ease-in-out alternate infinite;
+.modal-prize-container-animation {
+  animation: rotateScaleIn 0.7s ease-in forwards;
+}
+
+.modal-prize-container-animation-no-win {
+  animation: prizeValueScaleFadeIn 0.7s ease-in forwards;
 }
 
 @keyframes swing {
@@ -116,12 +120,12 @@ canvas {
 }
 
 .prize-value-animation {
-  animation: prizeValueFadeIn 0.7s ease-in forwards;
+  animation: prizeValueScaleFadeIn 0.7s ease-in forwards;
   animation-delay: 0.8s;
   opacity: 0;
 }
 
-@keyframes prizeValueFadeIn {
+@keyframes prizeValueScaleFadeIn {
   from {
     opacity: 0;
     transform: scale(0);

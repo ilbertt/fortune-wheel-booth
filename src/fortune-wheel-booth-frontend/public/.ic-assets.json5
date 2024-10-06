@@ -53,4 +53,16 @@
         // Uncomment to redirect all requests from .raw.icp0.io to .icp0.io
         // "allow_raw_access": false
     },
+    {
+        "match": ".well-known",
+        "ignore": false
+    },
+    {
+        "match": ".well-known/ii-alternative-origins",
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json"
+        },
+        "ignore": false
+    }
 ]

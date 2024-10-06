@@ -38,7 +38,13 @@ export default function ModalPrize({
           <>
             <p className='text-[6vw] font-bold uppercase text-white'>You won</p>
             {!wonPrize.hideModalImage && (
-              <div className='prize-container-animation'>
+              <div
+                className={
+                  isWinning
+                    ? 'modal-prize-container-animation'
+                    : 'modal-prize-container-animation-no-win'
+                }
+              >
                 <img
                   src={wonPrize.modalImageUri || wonPrize.image?.uri}
                   alt='prize'

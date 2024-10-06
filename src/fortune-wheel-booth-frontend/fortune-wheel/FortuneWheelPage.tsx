@@ -66,7 +66,7 @@ function FortuneWheelPage() {
   return (
     <main className='flex justify-center items-center flex-col relative h-full'>
       <div className='flex justify-center items-center absolute top-10 left-5 h-[3vw]'>
-        <img className='h-full' src='/hub-logo-light.svg' alt='hub logo logo' />
+        <img className='max-w-[25vw] z-30' src='/brand-logo.png' alt='brand top left logo' />
       </div>
       <div className='flex justify-center items-center absolute top-10 right-5 h-64'>
         <img className='h-full' src='/qrcode-oisy.png' alt='Oisy.com qr code' />
@@ -84,8 +84,8 @@ function FortuneWheelPage() {
         />
       )}
       <img
-        className='absolute bottom-5 right-5 h-[4vw] z-20'
-        src='/logo2.png'
+        className='absolute bottom-5 right-5 h-16 z-20'
+        src='/internet-computer-onchain.png'
         alt='DFINITY logo'
       />
     </main>
