@@ -105,20 +105,6 @@ canvas {
   }
 }
 
-.prize-animation {
-  animation: swing 1s ease-in-out alternate infinite;
-}
-
-@keyframes swing {
-  from {
-    transform: rotate(-20deg);
-  }
-
-  to {
-    transform: rotate(20deg);
-  }
-}
-
 .prize-value-animation {
   animation: prizeValueScaleFadeIn 0.7s ease-in forwards;
   animation-delay: 0.8s;
