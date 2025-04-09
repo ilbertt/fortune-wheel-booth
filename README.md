@@ -1,3 +1,5 @@
+> **WARNING**: this project is not maintained anymore. It has been migrated to the [ilbertt/ic-fortune-wheel](https://github.com/ilbertt/ic-fortune-wheel) project, which offers more functionalities.
+
 # fortune-wheel-booth
 
 Welcome to your new fortune-wheel-booth project and to the Internet Computer development community. By default, creating a new project adds this README and some template files to your project directory. You can edit these template files to customize your project and to include your own code to speed up the development cycle.
